@@ -185,6 +185,22 @@
             font-weight: bold;
             flex-shrink: 0;
         }
+
+        /* Ranking Table Styles */
+        .ranking-table-fixed {
+            table-layout: fixed;
+            width: 100%;
+        }
+        .col-rank { width: 50px; }
+        .col-score { width: 90px; }
+        .col-player { width: auto; }
+        .truncate-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            width: 100%;
+        }
     </style>
 </head>
 <body class="bg-pattern min-h-screen is-top">
@@ -289,7 +305,7 @@
             </div>
         </section>
 
-        <!-- Ranking Page Section -->
+        <!-- Ranking Page Section (UPDATED) -->
         <section id="ranking" class="page-transition hidden">
             <div class="bg-black/30 rounded-3xl p-6 md:p-12 border border-yellow-500/20 shadow-2xl shadow-yellow-500/5 max-w-4xl mx-auto space-y-16">
                 <!-- 年間 総合ポイント順位 TOP5 -->
@@ -299,12 +315,12 @@
                         <span class="update-date text-[10px] md:text-xs text-gray-500 font-numeric" id="date-point">Loading...</span>
                     </div>
                     <div class="overflow-hidden rounded-xl border border-white/10 bg-black/20">
-                        <table class="w-full text-left font-numeric table-fixed">
+                        <table class="ranking-table-fixed text-left font-numeric">
                             <thead class="bg-white/5 text-gray-400 text-xs md:text-sm">
                                 <tr>
-                                    <th class="p-3 md:p-4 w-20">Rank</th>
-                                    <th class="p-3 md:p-4">Player</th>
-                                    <th class="p-3 md:p-4 text-right w-32">Point</th>
+                                    <th class="p-3 md:p-4 col-rank">Rank</th>
+                                    <th class="p-3 md:p-4 col-player">Player</th>
+                                    <th class="p-3 md:p-4 text-right col-score">Point</th>
                                 </tr>
                             </thead>
                             <tbody id="point-ranking-body">
@@ -321,12 +337,12 @@
                         <span class="update-date text-[10px] md:text-xs text-gray-500 font-numeric" id="date-score">Loading...</span>
                     </div>
                     <div class="overflow-hidden rounded-xl border border-white/10 bg-black/20">
-                        <table class="w-full text-left font-numeric table-fixed">
+                        <table class="ranking-table-fixed text-left font-numeric">
                             <thead class="bg-white/5 text-gray-400 text-xs md:text-sm">
                                 <tr>
-                                    <th class="p-3 md:p-4 w-20">Rank</th>
-                                    <th class="p-3 md:p-4">Player</th>
-                                    <th class="p-3 md:p-4 text-right w-32">Score</th>
+                                    <th class="p-3 md:p-4 col-rank">Rank</th>
+                                    <th class="p-3 md:p-4 col-player">Player</th>
+                                    <th class="p-3 md:p-4 text-right col-score">Score</th>
                                 </tr>
                             </thead>
                             <tbody id="score-ranking-body">
@@ -736,11 +752,13 @@
                 
                 html += `
                     <tr class="border-b border-white/5 hover:bg-white/5 transition">
-                        <td class="p-4 font-bold text-white font-numeric">${i + 1}</td>
-                        <td class="p-4 font-bold ${isInvalid ? 'text-gray-500' : 'text-gray-200'}">
-                            ${isInvalid ? '該当者なし' : row[1]}
+                        <td class="p-4 font-bold text-white font-numeric col-rank">${i + 1}</td>
+                        <td class="p-4 font-bold col-player">
+                            <span class="truncate-name ${isInvalid ? 'text-gray-500' : 'text-gray-200'}" title="${isInvalid ? '' : row[1]}">
+                                ${isInvalid ? '該当者なし' : row[1]}
+                            </span>
                         </td>
-                        <td class="p-4 text-right font-numeric font-bold ${isInvalid ? 'text-gray-500' : 'text-white'}">
+                        <td class="p-4 text-right font-numeric font-bold col-score ${isInvalid ? 'text-gray-500' : 'text-white'}">
                             ${isInvalid ? '-' : row[2]}
                         </td>
                     </tr>
