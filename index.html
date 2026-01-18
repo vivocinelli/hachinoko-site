@@ -148,11 +148,6 @@
 <p class="p1"><span class="Apple-converted-space">            </span>line-height: 1;</p>
 <p class="p1"><span class="Apple-converted-space">        </span>}</p>
 <p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.medal-icon {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.25rem;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>filter: drop-shadow(0 0 5px rgba(0,0,0,0.3));</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
 <p class="p1"><span class="Apple-converted-space">        </span>.rule-h3 {</p>
 <p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.25rem;</p>
 <p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
@@ -577,13 +572,6 @@
 <p class="p1"><span class="Apple-converted-space">            </span>}</p>
 <p class="p1"><span class="Apple-converted-space">        </span>}</p>
 <p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function getMedalIcon(rank) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (rank === 1) return '&lt;span class="medal-icon"&gt;🥇&lt;/span&gt;';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (rank === 2) return '&lt;span class="medal-icon"&gt;🥈&lt;/span&gt;';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (rank === 3) return '&lt;span class="medal-icon"&gt;🥉&lt;/span&gt;';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>return `&lt;span class="text-gray-500 font-bold"&gt;${rank}&lt;/span&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
 <p class="p1"><span class="Apple-converted-space">        </span>function renderRankingTable(rows, containerId) {</p>
 <p class="p1"><span class="Apple-converted-space">            </span>const tbody = document.getElementById(containerId);</p>
 <p class="p1"><span class="Apple-converted-space">            </span>if (!rows) {</p>
@@ -597,7 +585,7 @@
 <p class="p1"><span class="Apple-converted-space">                </span>const isInvalid = !row || !row[1] || row[1] === "0";</p>
 <p class="p1"><span class="Apple-converted-space">                </span>html += `</p>
 <p class="p1"><span class="Apple-converted-space">                    </span>&lt;tr class="border-b border-white/5 hover:bg-white/5 transition"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;td class="p-4"&gt;${getMedalIcon(i+1)}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;td class="p-4 font-bold text-white font-numeric"&gt;${i + 1}&lt;/td&gt;</p>
 <p class="p1"><span class="Apple-converted-space">                        </span>&lt;td class="p-4 font-bold text-gray-200"&gt;${isInvalid ? '該当者なし' : row[1]}&lt;/td&gt;</p>
 <p class="p1"><span class="Apple-converted-space">                        </span>&lt;td class="p-4 text-right font-numeric font-bold text-white"&gt;${isInvalid ? '-' : row[2]}&lt;/td&gt;</p>
 <p class="p1"><span class="Apple-converted-space">                    </span>&lt;/tr&gt;</p>
