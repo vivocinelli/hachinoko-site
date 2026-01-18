@@ -101,12 +101,16 @@
             height: 28px;
         }
 
-        .rule-section {
-            background: rgba(0,0,0,0.3);
-            border-radius: 1.5rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255,255,255,0.05);
+        .rule-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1.25rem;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+        .rule-card:hover {
+            border-color: rgba(255,255,255,0.2);
         }
         
         .rule-list {
@@ -115,16 +119,21 @@
         }
         .rule-list li {
             position: relative;
-            padding-left: 1.25rem;
+            padding-left: 1.5rem;
             margin-bottom: 0.75rem;
             line-height: 1.6;
-            color: #d1d5db;
+            color: #e2e8f0;
         }
         .rule-list li::before {
-            content: "・";
+            content: "";
             position: absolute;
-            left: 0;
-            color: inherit;
+            left: 0.4rem;
+            top: 0.6rem;
+            width: 6px;
+            height: 6px;
+            background-color: currentColor;
+            border-radius: 50%;
+            opacity: 0.5;
         }
         
         .mahjong-tile-text {
@@ -134,28 +143,47 @@
             line-height: 1;
         }
 
-        .rule-h3 {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: white;
-            margin-top: 2rem;
-            margin-bottom: 1.25rem;
+        .section-header {
+            background: linear-gradient(to right, rgba(16, 185, 129, 0.2), transparent);
+            padding: 0.75rem 1rem;
             border-left: 4px solid #10b981;
-            padding-left: 0.75rem;
-        }
-        .rule-sub-h4 {
             font-weight: bold;
-            color: #f3f4f6;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
+            color: #ecfdf5;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
+        
         .example-box {
-            background: rgba(255,255,255,0.05);
-            border-radius: 0.5rem;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 0.75rem;
             padding: 1rem;
-            margin-top: 0.5rem;
-            font-size: 0.95rem;
-            color: #9ca3af;
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            border-left: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .point-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .step-num {
+            width: 1.5rem;
+            height: 1.5rem;
+            background: #10b981;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -315,77 +343,143 @@
 
         <!-- 4-Player Rules -->
         <section id="rules-4" class="page-transition hidden">
-            <div class="max-w-4xl mx-auto">
-                <h2 class="serif text-3xl mb-8 border-b border-blue-500/30 pb-4 text-blue-400 text-center">四麻 基本ゲームルール</h2>
-                <div class="rule-section">
-                    <ul class="rule-list">
-                        <li>東南戦　25,000点持ちの30,000点返し、喰いタンあり、役の後付けなしのアリナシルールです。</li>
-                        <li>定められた一式の麻雀牌の内、5萬・5筒・5索の各1枚が赤牌となっています。（赤牌の5萬・5筒・5索の各1枚はドラとする）</li>
-                        <li>槓ドラ、裏ドラあり。</li>
-                        <li>一本場は300点です。</li>
-                        <li>形式テンパイありで、テンパイ連荘です。</li>
-                        <li>リーチ棒、積棒はアガリ者が取得する。（供託があり、南四局が流局した場合、供託はトップ者に加算する）</li>
-                        <li>ダブロン、トリロン無し。頭ハネです。（ロン牌を捨てた人を基準にツモ番が近い人がアガる権利）</li>
-                        <li>得点計算は切り上げ満貫。</li>
-                        <li>南4局終了時、誰も30,000点に満たなかった場合は西場に入り、西4局まで行う。</li>
-                        <li>西4局終了時、誰も30,000点に満たなかった場合は北場に入り、北4局まで行う。</li>
-                        <li>北4局終了時、誰も30,000点に満たなかった場合はトップ者が30,000点になるよう、他3人が足りない点数を割り勘し、トップ者に渡し終了する。</li>
-                        <li>ハコテン（持ち点がマイナス）になった時点でゲーム終了。</li>
-                        <li>ハコテンになる局の支払いは、全点棒をアガリ者に渡すこと。</li>
-                        <div class="example-box">例：2,000点持っていて、8,000点を振り込んだ場合は、アガリ者に全点棒の2,000点を支払い、ゲーム終了となる。</div>
-                    </ul>
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="text-center mb-10">
+                    <h2 class="serif text-3xl md:text-4xl text-blue-400 mb-2">四麻 基本ゲームルール</h2>
+                    <p class="text-gray-400 text-sm tracking-widest uppercase">Standard 4-Player Rules</p>
+                </div>
 
-                    <h3 class="rule-h3">途中流局について</h3>
-                    <p class="mb-4 text-sm text-gray-400">（通常の流局と同じで積棒は増えます。親も流れます）</p>
-                    <ul class="rule-list">
-                        <li>四風連打：1巡目に4人が同じ風牌（東・南・西・北）を連続して捨てると成立</li>
-                        <li>四カン流れ：2人以上が合計4つのカンをした時に成立</li>
-                        <div class="example-box">（4回目のカンで捨て牌がロンされなかった時点で四カン流れとなります。槍槓（チャンカン）があった場合は、四カン流れより優先されます）</div>
-                        <li>九種九牌、4人リーチは続行です。</li>
-                        <li>流し満貫あり</li>
-                        <li>オープンリーチなし</li>
-                    </ul>
-
-                    <h3 class="rule-h3">フリテン、チョンボ</h3>
-                    <ul class="rule-list">
-                        <li>フリテンリーチ、リーチ後の見逃しはツモのみあがれます。ロンはできません。</li>
-                        <li class="font-bold text-white">「同巡内フリテン」</li>
-                        <p class="pl-5 text-sm mb-4">自分がテンパイ（役あり、リーチしていない）していて、他家から自分のアガリ牌が出たときに、その牌でロンをしなかった時点で、「同巡内フリテン」となる。同巡で他の他家がアガリ牌を捨てたとしてもロンすることはできません。同巡内フリテンは自分のツモ番を経て解消されます。</p>
-                        <li class="font-bold text-white">チョンボ（誤ロン、役無しアガリ、流局ノーテンリーチ）</li>
-                        <div class="example-box">【罰符：満貫払い】<br>親がチョンボした場合 → 子に4,000点ずつ支払う<br>子がチョンボした場合 → 親に4,000点、子に2,000点ずつ支払う</div>
-                        <li>チョンボした局はリセットされる。</li>
-                        <p class="pl-5 text-sm mb-4">（その局をやり直しする。局は流れません）リーチ棒はリーチ者に戻ります。積み棒はそのまま。連荘数も増えません。</p>
-                        <li>誤チー、誤ポンはお咎めなし。謝って何事もなかったように振る舞いましょう。</li>
-                        <li>多牌、少牌はアガリ放棄。</li>
-                    </ul>
-
-                    <h3 class="rule-h3">ポイントの計算</h3>
-                    <ul class="rule-list">
-                        <li>ウマ（順位点）あり →【 5-10 】</li>
-                        <div class="grid grid-cols-2 gap-2 text-sm text-gray-200 pl-5 mb-4">
-                            <div>1位 : +10,000点 （+10P）</div>
-                            <div>2位 : +5,000点 （+5P）</div>
-                            <div>3位 : -5,000点 （-5P）</div>
-                            <div>4位 : -10,000点 （-10P）</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="rule-card">
+                        <div class="section-header">基本システム</div>
+                        <div class="p-5">
+                            <ul class="rule-list">
+                                <li>東南戦　25,000点持ちの30,000点返し、喰いタンあり、役の後付けなしのアリナシルールです。</li>
+                                <li>定められた一式の麻雀牌の内、5萬・5筒・5索の各1枚が赤牌となっています。（赤牌の5萬・5筒・5索の各1枚はドラとする）</li>
+                                <li>槓ドラ、裏ドラあり。</li>
+                                <li>一本場は300点です。</li>
+                                <li>形式テンパイありで、テンパイ連荘です。</li>
+                                <li>リーチ棒、積棒はアガリ者が取得する。（供託があり、南四局が流局した場合、供託はトップ者に加算する）</li>
+                                <li>ダブロン、トリロン無し。頭ハネです。（ロン牌を捨てた人を基準にツモ番が近い人がアガる権利）</li>
+                                <li>得点計算は切り上げ満貫。</li>
+                            </ul>
                         </div>
-                        <p class="pl-5 text-xs text-emerald-400">※100点単位でも同点の場合は上家優先 （「起家から近い方」が優先）です。</p>
-                        <li class="mt-4">オカ（トップ賞）あり → 20,000点（20P）</li>
-                        <p class="pl-5 text-xs text-emerald-400">※100点単位でも同点の場合は上家優先 （「起家から近い方」が優先）です。</p>
-                    </ul>
+                    </div>
 
-                    <h3 class="rule-h3">ポイントの計算方法</h3>
-                    <div class="space-y-4 text-sm text-gray-300">
-                        <p>1. 原点基準（30,000点）でプラス・マイナスを算出<br>「ゲーム終了時の持ち点」－「30,000点」でプラス・マイナスを算出します。</p>
-                        <p>2. 点数をポイントに換算する<br>100点単位は五捨六入で計算します。（500点以下→0点、600点以上→1,000点として扱う）1,000点＝１ポイントで換算する。</p>
-                        <p>3. トップ者にオカを加算する<br>それぞれのポイントを発表し、トップ者に20ポイントを加算します。</p>
-                        <div class="example-box">
-                            <strong>例1：ゲーム終了時、18,500点だった場合の計算方法</strong><br>
-                            1. 18,500点－30,000点 = －11,500点<br>
-                            2. 【－11,500点】 →（五捨六入）→ 【－11,000】 →（ポイント換算）→ 【－11】<br><br>
-                            <strong>例2：ゲーム終了時、55,600点（トップ）だった場合の計算方法</strong><br>
-                            1. 55,600点－30,000点 = 25,600点<br>
-                            2. 【25,600点】 →（五捨六入）→ 【26,000】 →（ポイント換算）→ 【＋26】<br>
-                            3. 26＋20(オカ)＝46 → 【＋46】
+                    <div class="rule-card">
+                        <div class="section-header">対局の終了条件</div>
+                        <div class="p-5">
+                            <ul class="rule-list">
+                                <li>南4局終了時、誰も30,000点に満たなかった場合は西場に入り、西4局まで行う。</li>
+                                <li>西4局終了時、誰も30,000点に満たなかった場合は北場に入り、北4局まで行う。</li>
+                                <li>北4局終了時、誰も30,000点に満たなかった場合はトップ者が30,000点になるよう、他3人が足りない点数を割り勘し、トップ者に渡し終了する。</li>
+                                <li>ハコテン（持ち点がマイナス）になった時点でゲーム終了。</li>
+                                <li>ハコテンになる局の支払いは、全点棒をアガリ者に渡すこと。</li>
+                            </ul>
+                            <div class="example-box">例：2,000点持っていて、8,000点を振り込んだ場合は、アガリ者に全点棒の2,000点を支払い、ゲーム終了となる。</div>
+                        </div>
+                    </div>
+
+                    <div class="rule-card">
+                        <div class="section-header">途中流局について</div>
+                        <div class="p-5">
+                            <p class="mb-4 text-xs text-emerald-400 bg-emerald-400/10 p-2 rounded">※通常の流局と同じで積棒は増え、親も流れます</p>
+                            <ul class="rule-list">
+                                <li>四風連打：1巡目に4人が同じ風牌（東・南・西・北）を連続して捨てると成立</li>
+                                <li>四カン流れ：2人以上が合計4つのカンをした時に成立</li>
+                            </ul>
+                            <div class="example-box">（4回目のカンで捨て牌がロンされなかった時点で四カン流れとなります。槍槓（チャンカン）があった場合は、四カン流れより優先されます）</div>
+                            <ul class="rule-list mt-4">
+                                <li>九種九牌、4人リーチは続行です。</li>
+                                <li>流し満貫あり</li>
+                                <li>オープンリーチなし</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="rule-card">
+                        <div class="section-header">フリテン・チョンボ</div>
+                        <div class="p-5">
+                            <ul class="rule-list">
+                                <li>フリテンリーチ、リーチ後の見逃しはツモのみあがれます。ロンはできません。</li>
+                                <li class="text-white font-bold mb-1">「同巡内フリテン」</li>
+                                <p class="text-xs text-gray-400 mb-4 pl-4 leading-relaxed">自分がテンパイ（役あり、リーチしていない）していて、他家から自分のアガリ牌が出たときに、その牌でロンをしなかった時点で、「同巡内フリテン」となる。同巡で他の他家がアガリ牌を捨てたとしてもロンすることはできません。同巡内フリテンは自分のツモ番を経て解消されます。</p>
+                                <li class="text-white font-bold mb-1">チョンボ（誤ロン、役無しアガリ、流局ノーテンリーチ）</li>
+                            </ul>
+                            <div class="example-box border-red-500/30">
+                                <span class="text-red-400 font-bold block mb-1">【罰符：満貫払い】</span>
+                                親がチョンボした場合 → 子に4,000点ずつ支払う<br>
+                                子がチョンボした場合 → 親に4,000点、子に2,000点ずつ支払う
+                            </div>
+                            <ul class="rule-list mt-4">
+                                <li>チョンボした局はリセットされる。</li>
+                                <p class="text-xs text-gray-400 pl-4 leading-relaxed">（その局をやり直しする。局は流れません）リーチ棒はリーチ者に戻ります。積み棒はそのまま。連荘数も増えません。</p>
+                                <li>誤チー、誤ポンはお咎めなし。謝って何事もなかったように振る舞いましょう。</li>
+                                <li>多牌、少牌はアガリ放棄。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4-Player Point Section -->
+                <div class="rule-card">
+                    <div class="section-header">ポイントの計算</div>
+                    <div class="p-6 md:p-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-6">
+                                <div>
+                                    <h4 class="text-emerald-400 font-bold mb-4 flex items-center gap-2">
+                                        <span class="point-badge">ウマ</span> 順位点【 5-10 】
+                                    </h4>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="bg-white/5 p-3 rounded-lg border border-white/5 flex justify-between items-center">
+                                            <span class="text-xs text-gray-400">1位</span><span class="font-numeric font-bold">+10,000点 (+10P)</span>
+                                        </div>
+                                        <div class="bg-white/5 p-3 rounded-lg border border-white/5 flex justify-between items-center">
+                                            <span class="text-xs text-gray-400">2位</span><span class="font-numeric font-bold">+5,000点 (+5P)</span>
+                                        </div>
+                                        <div class="bg-white/5 p-3 rounded-lg border border-white/5 flex justify-between items-center">
+                                            <span class="text-xs text-gray-400">3位</span><span class="font-numeric font-bold">-5,000点 (-5P)</span>
+                                        </div>
+                                        <div class="bg-white/5 p-3 rounded-lg border border-white/5 flex justify-between items-center">
+                                            <span class="text-xs text-gray-400">4位</span><span class="font-numeric font-bold">-10,000点 (-10P)</span>
+                                        </div>
+                                    </div>
+                                    <p class="mt-3 text-[10px] text-emerald-500/80">※100点単位でも同点の場合は上家優先 （「起家から近い方」が優先）です。</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-emerald-400 font-bold mb-4 flex items-center gap-2">
+                                        <span class="point-badge">オカ</span> トップ賞
+                                    </h4>
+                                    <div class="bg-white/5 p-4 rounded-lg border border-white/5 flex justify-between items-center">
+                                        <span class="text-sm text-gray-300">トップボーナス</span><span class="font-numeric text-xl font-bold text-yellow-500">20,000点 (20P)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <h4 class="text-emerald-400 font-bold mb-4">ポイントの計算方法</h4>
+                                <div class="space-y-4">
+                                    <div class="flex gap-3">
+                                        <span class="step-num">1</span>
+                                        <p class="text-sm text-gray-300 leading-relaxed">原点基準（30,000点）でプラス・マイナスを算出<br>「ゲーム終了時の持ち点」－「30,000点」で算出します。</p>
+                                    </div>
+                                    <div class="flex gap-3">
+                                        <span class="step-num">2</span>
+                                        <p class="text-sm text-gray-300 leading-relaxed">点数をポイントに換算する<br>100点単位は五捨六入で計算します。1,000点＝１ポイントで換算。</p>
+                                    </div>
+                                    <div class="flex gap-3">
+                                        <span class="step-num">3</span>
+                                        <p class="text-sm text-gray-300 leading-relaxed">トップ者にオカを加算する<br>それぞれのポイントを発表し、トップ者に20ポイントを加算します。</p>
+                                    </div>
+                                </div>
+                                <div class="example-box">
+                                    <strong class="text-gray-200">例1：持ち点 18,500点 の場合</strong><br>
+                                    18,500 - 30,000 = -11,500 → 五捨六入で -11,000 → <span class="text-white font-bold">【-11P】</span><br><br>
+                                    <strong class="text-gray-200">例2：持ち点 55,600点（トップ） の場合</strong><br>
+                                    55,600 - 30,000 = 25,600 → 五捨六入で 26,000 → 26 + 20(オカ) = <span class="text-white font-bold">【+46P】</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -394,80 +488,146 @@
 
         <!-- 3-Player Rules -->
         <section id="rules-3" class="page-transition hidden">
-            <div class="max-w-4xl mx-auto">
-                <h2 class="serif text-3xl mb-8 border-b border-accent-red/30 pb-4 text-accent-red text-center">三麻 基本ゲームルール</h2>
-                <div class="rule-section">
-                    <ul class="rule-list">
-                        <li>東南戦　35,000点持ちの40,000点返し、喰いタンあり、役の後付けなしのアリナシルールです。</li>
-                        <li>定められた一式の麻雀牌の内、5萬・5筒・5索の各1枚が赤牌となっています。（赤牌の5萬・5筒・5索の各1枚はドラとする）</li>
-                        <li>槓ドラ、裏ドラあり。</li>
-                        <li>一本場は300点です。</li>
-                        <li>形式テンパイありで、テンパイ連荘です。</li>
-                        <li class="font-bold text-white">流局時のノーテン罰符について</li>
-                        <p class="pl-5 text-sm">一人テンパイの場合、ノーテンの人がテンパイ者に1,000点支払う。</p>
-                        <p class="pl-5 text-sm">二人テンパイの場合、ノーテンの人がテンパイ者に1,000点ずつ支払う。</p>
-                        <p class="pl-5 text-sm mb-4">全員テンパイ、全員ノーテンの場合は支払いはありません。</p>
-                        <li>リーチ棒、供託はアガリ者が取得する。（南四局が流局した場合、トップ者に加算する）</li>
-                        <li>ダブロン、トリロン無し。頭ハネです。（ロン牌を捨てた人を基準にツモ番が近い人がアガる権利）</li>
-                        <li>得点計算は切り上げ満貫。</li>
-                        <li>南4局終了時、誰も40,000点に満たなかった場合は西場に入り、西4局まで行う。</li>
-                        <li>西4局終了時、誰も40,000点に満たなかった場合は北場に入り、北4局まで行う。</li>
-                        <li>北4局終了時、誰も40,000点に満たなかった場合はトップ者が40,000点になるよう、他3人が足りない点数を割り勘し、トップ者に渡し終了する。</li>
-                        <li>ハコテン（持ち点がマイナス）になった時点でゲーム終了。</li>
-                        <li>ハコテンになる局の支払いは、全点棒をアガリ者に渡すこと。</li>
-                        <div class="example-box">例：2,000点持っていて、8,000点を振り込んだ場合は、アガリ者に全点棒の2,000点を支払い、ゲーム終了となる。</div>
-                    </ul>
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="text-center mb-10">
+                    <h2 class="serif text-3xl md:text-4xl text-accent-red mb-2">三麻 基本ゲームルール</h2>
+                    <p class="text-gray-400 text-sm tracking-widest uppercase">High-Speed 3-Player Rules</p>
+                </div>
 
-                    <h3 class="rule-h3">途中流局について</h3>
-                    <p class="mb-4 text-sm text-gray-400">（通常の流局と同じで積棒は増えます。親も流れます）</p>
-                    <ul class="rule-list">
-                        <li>四風連打：1巡目に4人が同じ風牌（東・南・西・北）を連続して捨てると成立</li>
-                        <li>四カン流れ：2人以上が合計4つのカンをした時に成立</li>
-                        <div class="example-box">（4回目のカンで捨て牌がロンされなかった時点で四カン流れとなります。槍槓（チャンカン）があった場合は、四カン流れより優先されます）</div>
-                        <li>九種九牌、4人リーチは続行です。</li>
-                        <li>流し満貫あり</li>
-                        <li>オープンリーチなし</li>
-                    </ul>
-
-                    <h3 class="rule-h3">フリテン、チョンボ</h3>
-                    <ul class="rule-list">
-                        <li>フリテンリーチ、リーチ後の見逃しはツモのみあがれます。ロンはできません。</li>
-                        <li class="font-bold text-white">「同巡内フリテン」</li>
-                        <p class="pl-5 text-sm mb-4">自分がテンパイ（役あり、リーチしていない）していて、他家から自分のアガリ牌が出たときに、その牌でロンをしなかった時点で、「同巡内フリテン」となる。同巡で他の他家がアガリ牌を捨てたとしてもロンすることはできません。同巡内フリテンは自分のツモ番を経て解消されます。</p>
-                        <li class="font-bold text-white">チョンボ（誤ロン、役無しアガリ、流局ノーテンリーチ）</li>
-                        <div class="example-box">【罰符：満貫払い】<br>親がチョンボした場合 → 子に4,000点ずつ支払う<br>子がチョンボした場合 → 親に4,000点、子に2,000点ずつ支払う</div>
-                        <li>チョンボした局はリセットされる。</li>
-                        <p class="pl-5 text-sm mb-4">（その局をやり直しする。局は流れません）リーチ棒はリーチ者に戻ります。積み棒はそのまま。連荘数も増えません。</p>
-                        <li>誤チー、誤ポンはお咎めなし。謝って何事もなかったように振る舞いましょう。</li>
-                        <li>多牌、少牌はアガリ放棄。</li>
-                    </ul>
-
-                    <h3 class="rule-h3">ポイントの計算</h3>
-                    <ul class="rule-list">
-                        <li>ウマ（順位点）あり</li>
-                        <div class="grid grid-cols-1 gap-2 text-sm text-gray-200 pl-5 mb-4">
-                            <div>1位 : +10,000点 （+10P）</div>
-                            <div>2位 : 0点 （±0P）</div>
-                            <div>3位 : -10,000点 （-10p）</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="rule-card">
+                        <div class="section-header" style="border-left-color: var(--accent-red);">基本システム</div>
+                        <div class="p-5">
+                            <ul class="rule-list">
+                                <li>東南戦　35,000点持ちの40,000点返し、喰いタンあり、役の後付けなしのアリナシルールです。</li>
+                                <li>定められた一式の麻雀牌の内、5萬・5筒・5索の各1枚が赤牌となっています。（赤牌の5萬・5筒・5索の各1枚はドラとする）</li>
+                                <li>槓ドラ、裏ドラあり。</li>
+                                <li>一本場は300点です。</li>
+                                <li>形式テンパイありで、テンパイ連荘です。</li>
+                                <li class="text-white font-bold mb-2">流局時のノーテン罰符について</li>
+                                <div class="space-y-1 mb-4 pl-4 text-sm text-gray-300">
+                                    <p>・一人テンパイ：ノーテンが1,000点支払う</p>
+                                    <p>・二人テンパイ：ノーテンが1,000点ずつ支払う</p>
+                                    <p class="text-xs text-gray-500 italic">※全員テンパイ、全員ノーテンは支払いなし</p>
+                                </div>
+                                <li>リーチ棒、供託はアガリ者が取得する。（南四局が流局した場合、トップ者に加算する）</li>
+                                <li>ダブロン、トリロン無し。頭ハネです。</li>
+                                <li>得点計算は切り上げ満貫。</li>
+                            </ul>
                         </div>
-                        <p class="pl-5 text-xs text-emerald-400">※100点単位でも同点の場合は上家優先 （「起家から近い方」が優先）です。</p>
-                        <li class="mt-4">オカ（トップ賞）あり → 15,000点（15P）</li>
-                        <p class="pl-5 text-xs text-emerald-400">※100点単位でも同点の場合は上家優先 （「起家から近い方」が優先）です。</p>
-                    </ul>
+                    </div>
 
-                    <h3 class="rule-h3">ポイントの計算方法</h3>
-                    <div class="space-y-4 text-sm text-gray-300">
-                        <p>1. 原点基準（40,000点）でプラス・マイナスを算出<br>「ゲーム終了時の持ち点」－「40,000点」でプラス・マイナスを算出します。</p>
-                        <p>2. 点数をポイントに換算する<br>100点単位は五捨六入で計算します。（500点以下→0点、600点以上→1,000点として扱う）1,000点＝１ポイントで換算する。</p>
-                        <p>3. トップ者にオカを加算する<br>それぞれのポイントを発表し、トップ者に20ポイントを加算します。</p>
-                        <div class="example-box">
-                            <strong>例1：ゲーム終了時、18,500点だった場合の計算方法</strong><br>
-                            1. 18,500点－40,000点 = －21,500点<br>
-                            2. 【－21,500点】 →（五捨六入）→ 【－21,000】 →（ポイント換算）→ 【－21】<br><br>
-                            <strong>例2：ゲーム終了時、55,600点（トップ）だった場合の計算方法</strong><br>
-                            1. 55,600点－40,000点 = 15,600点<br>
-                            2. 【15,600点】 →（五捨六入）→ 【16,000】 →（ポイント換算）→ 【＋16】<br>
-                            3. 16＋15(オカ)＝31 → 【＋31】
+                    <div class="rule-card">
+                        <div class="section-header" style="border-left-color: var(--accent-red);">対局の終了条件</div>
+                        <div class="p-5">
+                            <ul class="rule-list">
+                                <li>南4局終了時、誰も40,000点に満たなかった場合は西場に入り、西4局まで行う。</li>
+                                <li>西4局終了時、誰も40,000点に満たなかった場合は北場に入り、北4局まで行う。</li>
+                                <li>北4局終了時、誰も40,000点に満たなかった場合はトップ者が40,000点になるよう、他3人が足りない点数を割り勘し、トップ者に渡し終了する。</li>
+                                <li>ハコテン（持ち点がマイナス）になった時点でゲーム終了。</li>
+                                <li>ハコテンになる局の支払いは、全点棒をアガリ者に渡すこと。</li>
+                            </ul>
+                            <div class="example-box">例：2,000点持っていて、8,000点を振り込んだ場合は、アガリ者に全点棒の2,000点を支払い、ゲーム終了となる。</div>
+                        </div>
+                    </div>
+
+                    <div class="rule-card">
+                        <div class="section-header" style="border-left-color: var(--accent-red);">途中流局について</div>
+                        <div class="p-5">
+                            <p class="mb-4 text-xs text-red-400 bg-red-400/10 p-2 rounded">※通常の流局と同じで積棒は増え、親も流れます</p>
+                            <ul class="rule-list">
+                                <li>四風連打：1巡目に4人が同じ風牌（東・南・西・北）を連続して捨てると成立</li>
+                                <li>四カン流れ：2人以上が合計4つのカンをした時に成立</li>
+                            </ul>
+                            <div class="example-box">（4回目のカンで捨て牌がロンされなかった時点で四カン流れとなります。槍槓（チャンカン）があった場合は、四カン流れより優先されます）</div>
+                            <ul class="rule-list mt-4">
+                                <li>九種九牌、4人リーチは続行です。</li>
+                                <li>流し満貫あり</li>
+                                <li>オープンリーチなし</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="rule-card">
+                        <div class="section-header" style="border-left-color: var(--accent-red);">フリテン・チョンボ</div>
+                        <div class="p-5">
+                            <ul class="rule-list">
+                                <li>フリテンリーチ、リーチ後の見逃しはツモのみあがれます。ロンはできません。</li>
+                                <li class="text-white font-bold mb-1">「同巡内フリテン」</li>
+                                <p class="text-xs text-gray-400 mb-4 pl-4 leading-relaxed">自分がテンパイ（役あり、リーチしていない）していて、他家から自分のアガリ牌が出たときに、その牌でロンをしなかった時点で、「同巡内フリテン」となる。同巡で他の他家がアガリ牌を捨てたとしてもロンすることはできません。同巡内フリテンは自分のツモ番を経て解消されます。</p>
+                                <li class="text-white font-bold mb-1">チョンボ（誤ロン、役無しアガリ、流局ノーテンリーチ）</li>
+                            </ul>
+                            <div class="example-box border-red-500/30">
+                                <span class="text-red-400 font-bold block mb-1">【罰符：満貫払い】</span>
+                                親がチョンボした場合 → 子に4,000点ずつ支払う<br>
+                                子がチョンボした場合 → 親に4,000点、子に2,000点ずつ支払う
+                            </div>
+                            <ul class="rule-list mt-4">
+                                <li>チョンボした局はリセットされる。</li>
+                                <p class="text-xs text-gray-400 pl-4 leading-relaxed">（その局をやり直しする。局は流れません）リーチ棒はリーチ者に戻ります。積み棒はそのまま。連荘数も増えません。</p>
+                                <li>誤チー、誤ポンはお咎めなし。謝って何事もなかったように振る舞いましょう。</li>
+                                <li>多牌、少牌はアガリ放棄。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3-Player Point Section -->
+                <div class="rule-card">
+                    <div class="section-header" style="border-left-color: var(--accent-red);">ポイントの計算</div>
+                    <div class="p-6 md:p-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-6">
+                                <div>
+                                    <h4 class="text-accent-red font-bold mb-4 flex items-center gap-2">
+                                        <span class="point-badge" style="background: rgba(190, 18, 60, 0.2);">ウマ</span> 順位点
+                                    </h4>
+                                    <div class="grid grid-cols-1 gap-3">
+                                        <div class="bg-white/5 p-3 rounded-lg border border-white/5 flex justify-between items-center">
+                                            <span class="text-xs text-gray-400">1位</span><span class="font-numeric font-bold text-emerald-400">+10,000点 (+10P)</span>
+                                        </div>
+                                        <div class="bg-white/5 p-3 rounded-lg border border-white/5 flex justify-between items-center">
+                                            <span class="text-xs text-gray-400">2位</span><span class="font-numeric font-bold text-gray-400">0点 (±0P)</span>
+                                        </div>
+                                        <div class="bg-white/5 p-3 rounded-lg border border-white/5 flex justify-between items-center">
+                                            <span class="text-xs text-gray-400">3位</span><span class="font-numeric font-bold text-accent-red">-10,000点 (-10P)</span>
+                                        </div>
+                                    </div>
+                                    <p class="mt-3 text-[10px] text-accent-red/80">※100点単位でも同点の場合は上家優先 （「起家から近い方」が優先）です。</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-accent-red font-bold mb-4 flex items-center gap-2">
+                                        <span class="point-badge" style="background: rgba(190, 18, 60, 0.2);">オカ</span> トップ賞
+                                    </h4>
+                                    <div class="bg-white/5 p-4 rounded-lg border border-white/5 flex justify-between items-center">
+                                        <span class="text-sm text-gray-300">トップボーナス</span><span class="font-numeric text-xl font-bold text-yellow-500">15,000点 (15P)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <h4 class="text-accent-red font-bold mb-4">ポイントの計算方法</h4>
+                                <div class="space-y-4">
+                                    <div class="flex gap-3">
+                                        <span class="step-num" style="background: var(--accent-red);">1</span>
+                                        <p class="text-sm text-gray-300 leading-relaxed">原点基準（40,000点）でプラス・マイナスを算出<br>「ゲーム終了時の持ち点」－「40,000点」で算出します。</p>
+                                    </div>
+                                    <div class="flex gap-3">
+                                        <span class="step-num" style="background: var(--accent-red);">2</span>
+                                        <p class="text-sm text-gray-300 leading-relaxed">点数をポイントに換算する<br>100点単位は五捨六入で計算します。1,000点＝１ポイントで換算。</p>
+                                    </div>
+                                    <div class="flex gap-3">
+                                        <span class="step-num" style="background: var(--accent-red);">3</span>
+                                        <p class="text-sm text-gray-300 leading-relaxed">トップ者にオカを加算する<br>それぞれのポイントを発表し、トップ者に15ポイントを加算します。</p>
+                                    </div>
+                                </div>
+                                <div class="example-box">
+                                    <strong class="text-gray-200">例1：持ち点 18,500点 の場合</strong><br>
+                                    18,500 - 40,000 = -21,500 → 五捨六入で -21,000 → <span class="text-white font-bold">【-21P】</span><br><br>
+                                    <strong class="text-gray-200">例2：持ち点 55,600点（トップ） の場合</strong><br>
+                                    55,600 - 40,000 = 15,600 → 五捨六入で 16,000 → 16 + 15(オカ) = <span class="text-white font-bold">【+31P】</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
