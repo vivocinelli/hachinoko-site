@@ -1,459 +1,616 @@
-<!DOCTYPE html>
-<html lang="ja">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>雀荘はちのこ | 公式サイト & ランキング</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        midnight: '#020617',
-                        surface: '#0f172a',
-                        gold: '#fbbf24',
-                        goldhover: '#d97706',
-                        teal: '#14b8a6',
-                    },
-                    fontFamily: {
-                        sans: ['"Noto Sans JP"', 'sans-serif'],
-                        serif: ['"Shippori Mincho"', 'serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { margin: 0; overflow-x: hidden; background-color: #020617; }
-        #canvas-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .page-content { display: none; opacity: 0; transition: opacity 0.3s ease; }
-        .page-content.active { display: block; opacity: 1; animation: fadeIn 0.5s ease-out; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .gold-gradient-text {
-            background: linear-gradient(to bottom right, #fbbf24, #d97706);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .tab-btn.active {
-            background-color: #fbbf24;
-            color: #020617;
-        }
-    </style>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.3">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
 </head>
-<body class="text-slate-200 font-sans antialiased selection:bg-gold selection:text-midnight">
-
-    <div id="canvas-container"></div>
-
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 glass-panel border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-            <button onclick="showPage('top')" class="font-serif text-2xl font-black tracking-tighter text-white hover:text-gold transition-colors">
-                雀荘<span class="text-gold">はちのこ</span>
-            </button>
-            <div class="hidden md:flex space-x-6 text-sm font-bold uppercase tracking-widest">
-                <button onclick="showPage('rules-4')" class="hover:text-gold transition-colors">4人打ち</button>
-                <button onclick="showPage('rules-3')" class="hover:text-gold transition-colors">3人打ち</button>
-                <button onclick="showPage('points')" class="hover:text-gold transition-colors">点数表</button>
-                <button onclick="showPage('ranking')" class="text-gold flex items-center gap-2 hover:text-white transition-colors">
-                    <span class="animate-pulse">🏆</span> ランキング
-                </button>
-            </div>
-            <!-- Mobile Menu Icon (Simple) -->
-            <button onclick="showPage('ranking')" class="md:hidden text-gold text-2xl">🏆</button>
-        </div>
-    </nav>
-
-    <!-- PAGE: TOP -->
-    <div id="page-top" class="page-content active pt-32 pb-24">
-        <div class="max-w-5xl mx-auto px-4 text-center">
-            <h1 class="text-5xl md:text-8xl font-serif font-bold text-white mb-6 leading-tight">
-                至高の一打、<br><span class="gold-gradient-text">最高の舞台で。</span>
-            </h1>
-            <p class="text-slate-400 text-lg md:text-xl mb-16 font-light">
-                最新の戦績データと公式ルールはこちらから。
-            </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <button onclick="showPage('ranking')" class="md:col-span-3 glass-panel p-8 rounded-3xl border border-gold/20 flex flex-col md:flex-row items-center justify-between hover:bg-gold/5 transition-all group">
-                    <div class="flex items-center gap-6 mb-4 md:mb-0">
-                        <span class="text-5xl">👑</span>
-                        <div class="text-left">
-                            <h3 class="text-2xl font-bold text-gold">店内ランキング</h3>
-                            <p class="text-slate-400 text-sm">年間最高得点・総得点をチェック</p>
-                        </div>
-                    </div>
-                    <span class="bg-gold text-midnight px-6 py-2 rounded-full font-black group-hover:scale-110 transition-transform shadow-lg shadow-gold/20">VIEW RANKING</span>
-                </button>
-
-                <button onclick="showPage('rules-4')" class="glass-panel p-10 rounded-3xl hover:border-gold/30 transition-all text-center group">
-                    <span class="text-4xl block mb-4 group-hover:scale-110 transition-transform">🀄</span>
-                    <h3 class="text-xl font-bold mb-2">四人打ちルール</h3>
-                    <p class="text-slate-500 text-xs">アリアリ・テンパイ連荘</p>
-                </button>
-
-                <button onclick="showPage('rules-3')" class="glass-panel p-10 rounded-3xl hover:border-gold/30 transition-all text-center group">
-                    <span class="text-4xl block mb-4 group-hover:scale-110 transition-transform">🀆</span>
-                    <h3 class="text-xl font-bold mb-2">三人打ちルール</h3>
-                    <p class="text-slate-500 text-xs">抜きドラ・萬子なし</p>
-                </button>
-
-                <button onclick="showPage('points')" class="glass-panel p-10 rounded-3xl hover:border-gold/30 transition-all text-center group">
-                    <span class="text-4xl block mb-4 group-hover:scale-110 transition-transform">📊</span>
-                    <h3 class="text-xl font-bold mb-2">点数表・共通</h3>
-                    <p class="text-slate-500 text-xs">符計算・切り上げ満貫</p>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- PAGE: Ranking -->
-    <div id="page-ranking" class="page-content pt-32 pb-24">
-        <div class="max-w-5xl mx-auto px-4">
-            <button onclick="showPage('top')" class="text-slate-500 hover:text-white mb-8 flex items-center gap-2 transition-colors">← TOPへ戻る</button>
-            
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                <div>
-                    <h2 class="text-4xl font-serif font-bold text-white mb-2">店内ランキング</h2>
-                    <p class="text-slate-500 text-sm">Googleスプレッドシートとリアルタイム同期しています。</p>
-                </div>
-                <div class="flex bg-surface p-1 rounded-2xl border border-white/5">
-                    <button id="btn-annual" onclick="fetchAndDisplay('annual')" class="px-6 py-3 rounded-xl text-sm font-bold transition-all bg-gold text-midnight">年間最高得点</button>
-                    <button id="btn-total" onclick="fetchAndDisplay('total')" class="px-6 py-3 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-white">総得点</button>
-                </div>
-            </div>
-
-            <!-- Champion Card -->
-            <div id="champion-card" class="mb-12 transition-opacity duration-500">
-                <!-- Data will be injected here -->
-                <div class="glass-panel p-12 rounded-[2rem] text-center animate-pulse">
-                    <p class="text-slate-500">データを読み込み中...</p>
-                </div>
-            </div>
-
-            <div class="glass-panel rounded-3xl overflow-hidden shadow-2xl border border-white/5">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-white/5 text-slate-500 text-xs font-bold uppercase tracking-widest">
-                            <th class="p-6 text-center w-20">Rank</th>
-                            <th class="p-6">Name</th>
-                            <th class="p-6 text-center w-32">Games</th>
-                            <th class="p-6 text-right w-40">Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ranking-body" class="divide-y divide-white/5 text-lg">
-                        <!-- Data will be injected here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- PAGE: Rules 4 (四麻) -->
-    <div id="page-rules-4" class="page-content pt-32 pb-24">
-        <div class="max-w-4xl mx-auto px-4">
-            <button onclick="showPage('top')" class="text-slate-500 hover:text-white mb-8 flex items-center gap-2 transition-colors">← TOPへ戻る</button>
-            <h2 class="text-4xl font-serif font-bold text-white mb-8 border-b border-gold/30 pb-4 inline-block">四人打ちルール</h2>
-            
-            <div class="space-y-6">
-                <div class="glass-panel p-8 rounded-3xl border-l-4 border-gold">
-                    <h3 class="text-xl font-bold text-gold mb-4">基本システム</h3>
-                    <ul class="list-disc list-inside space-y-3 text-slate-300">
-                        <li><strong class="text-white">持ち点:</strong> 25,000点持ち / 30,000点返し</li>
-                        <li><strong class="text-white">アガリ:</strong> 喰いタンあり、後付けあり（アリアリ）</li>
-                        <li><strong class="text-white">ドラ:</strong> 5萬・5筒・5索に各1枚赤牌あり（ドラ扱い）</li>
-                        <li><strong class="text-white">連荘:</strong> テンパイ連荘</li>
-                        <li><strong class="text-white">終了:</strong> ドボン（ハコ割れ）終了あり</li>
-                    </ul>
-                </div>
-                
-                <div class="glass-panel p-8 rounded-3xl">
-                    <h3 class="text-xl font-bold text-white mb-4">詳細ルール</h3>
-                    <ul class="list-disc list-inside space-y-2 text-slate-400 text-sm">
-                        <li>途中流局あり（九種九牌、四風連打、四開槓）</li>
-                        <li>ダブロンあり（供託は上家取り、積棒は親取り）</li>
-                        <li>オーラスの親のアガリ止め、テンパイ止めあり</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PAGE: Rules 3 (三麻) -->
-    <div id="page-rules-3" class="page-content pt-32 pb-24">
-        <div class="max-w-4xl mx-auto px-4">
-            <button onclick="showPage('top')" class="text-slate-500 hover:text-white mb-8 flex items-center gap-2 transition-colors">← TOPへ戻る</button>
-            <h2 class="text-4xl font-serif font-bold text-white mb-8 border-b border-teal-500/50 pb-4 inline-block">三人打ちルール</h2>
-            
-            <div class="space-y-6">
-                <div class="glass-panel p-8 rounded-3xl border-l-4 border-teal-500">
-                    <h3 class="text-xl font-bold text-teal-400 mb-4">三麻特有システム</h3>
-                    <ul class="list-disc list-inside space-y-3 text-slate-300">
-                        <li><strong class="text-white">持ち点:</strong> 35,000点持ち / 40,000点返し</li>
-                        <li><strong class="text-white">使用牌:</strong> 萬子の2〜8を除く牌を使用</li>
-                        <li><strong class="text-white">北牌:</strong> 抜きドラとして使用（手牌で使うと役満以外アガれません）</li>
-                        <li><strong class="text-white">チー:</strong> 不可</li>
-                        <li><strong class="text-white">ツモ損:</strong> なし（満貫ツモは子3000/親5000の支払いではなく、まるまる貰えます ※要確認）</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PAGE: Points (点数表) -->
-    <div id="page-points" class="page-content pt-32 pb-24">
-        <div class="max-w-5xl mx-auto px-4">
-            <button onclick="showPage('top')" class="text-slate-500 hover:text-white mb-8 flex items-center gap-2 transition-colors">← TOPへ戻る</button>
-            <h2 class="text-4xl font-serif font-bold text-white mb-8">点数表・符計算</h2>
-
-            <div class="glass-panel p-6 rounded-2xl mb-8 flex items-center gap-4 bg-gold/5 border border-gold/20">
-                <span class="text-3xl">📢</span>
-                <div>
-                    <p class="text-gold font-bold">切り上げ満貫を採用しています</p>
-                    <p class="text-xs text-slate-400">30符4翻、60符3翻は満貫（8000/12000）となります。</p>
-                </div>
-            </div>
-
-            <!-- Tabs for Points -->
-            <div class="flex gap-2 mb-4">
-                <button onclick="switchScoreTab('parent')" id="btn-score-parent" class="tab-btn active flex-1 py-3 rounded-t-xl font-bold transition-all bg-gold text-midnight">親の点数</button>
-                <button onclick="switchScoreTab('child')" id="btn-score-child" class="tab-btn flex-1 py-3 glass-panel rounded-t-xl font-bold transition-all text-slate-400 hover:text-white">子の点数</button>
-            </div>
-
-            <div class="glass-panel rounded-b-xl rounded-tr-xl overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left min-w-[700px]">
-                        <thead>
-                            <tr class="bg-white/10 text-gold text-sm uppercase tracking-wider">
-                                <th class="p-4">翻数</th>
-                                <th class="p-4">平和 (20-30符)</th>
-                                <th class="p-4">七対子 (25符)</th>
-                                <th class="p-4">鳴き/面前 (30-40符)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="score-table-body" class="divide-y divide-white/5 text-sm">
-                            <!-- JS will load here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTU7AVMRhu_uQ9HD16LwlqLyKKmb6f-Yp7wa_YhemTekosvQztNZP9rYRVN4pGCyh4z9CxEk4rpgXm1/pub?gid=1117110911&single=true&output=csv";
-
-        // --- PAGE NAVIGATION ---
-        function showPage(pageId) {
-            const target = document.getElementById('page-' + pageId);
-            if (!target) {
-                console.error(`Page element "page-${pageId}" not found.`);
-                return;
-            }
-
-            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-            target.classList.add('active');
-            
-            window.scrollTo({top: 0, behavior: 'smooth'});
-            
-            // ページごとの初期化処理
-            if(pageId === 'ranking') fetchAndDisplay('annual');
-            if(pageId === 'points') switchScoreTab('parent');
-        }
-
-        // --- RANKING LOGIC ---
-        async function fetchAndDisplay(mode) {
-            const isAnnual = mode === 'annual';
-            const btnAnnual = document.getElementById('btn-annual');
-            const btnTotal = document.getElementById('btn-total');
-            
-            if (btnAnnual) btnAnnual.className = isAnnual ? "px-6 py-3 rounded-xl text-sm font-bold transition-all bg-gold text-midnight" : "px-6 py-3 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-white";
-            if (btnTotal) btnTotal.className = !isAnnual ? "px-6 py-3 rounded-xl text-sm font-bold transition-all bg-gold text-midnight" : "px-6 py-3 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-white";
-
-            try {
-                const res = await fetch(CSV_URL);
-                const text = await res.text();
-                // 空行を除外してパース
-                const rows = text.split('\n').filter(r => r.trim() !== '').slice(1).map(r => r.split(','));
-
-                const data = rows.map(r => ({
-                    rank: r[0]?.trim(),
-                    name: r[1]?.trim(),
-                    games: r[2]?.trim(),
-                    annual: r[3]?.trim(),
-                    total: r[4]?.trim()
-                })).filter(d => d.name); // 名前がない行は除外
-
-                // Sort based on mode
-                data.sort((a, b) => {
-                    const valA = parseFloat((isAnnual ? a.annual : a.total).replace(/[^-0.9.]/g, '')) || 0;
-                    const valB = parseFloat((isAnnual ? b.annual : b.total).replace(/[^-0.9.]/g, '')) || 0;
-                    return valB - valA;
-                });
-
-                renderRanking(data, mode);
-            } catch (e) {
-                console.error("Fetch error", e);
-                document.getElementById('champion-card').innerHTML = `<div class="p-8 text-center text-red-400">データ取得エラー: ${e.message}</div>`;
-            }
-        }
-
-        function renderRanking(data, mode) {
-            const isAnnual = mode === 'annual';
-            const top = data[0];
-            const champCard = document.getElementById('champion-card');
-            const rankBody = document.getElementById('ranking-body');
-            
-            if (champCard && top) {
-                champCard.innerHTML = `
-                    <div class="glass-panel p-10 rounded-[2.5rem] border border-gold/30 relative overflow-hidden group">
-                        <div class="absolute -top-10 -right-10 opacity-10 text-[12rem] group-hover:scale-110 transition-transform duration-700">🀄</div>
-                        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                            <div class="text-center md:text-left">
-                                <span class="inline-block px-4 py-1 rounded-full bg-gold/20 text-gold text-[10px] font-black tracking-widest uppercase mb-4 border border-gold/50">Current Record Holder</span>
-                                <h3 class="text-6xl md:text-8xl font-serif font-black text-white">${top.name}</h3>
-                                <p class="text-slate-500 mt-2 font-bold flex items-center justify-center md:justify-start gap-2">
-                                    <span>${top.games} Games</span>
-                                    <span class="w-1 h-1 rounded-full bg-slate-600"></span>
-                                    <span>Rank 1</span>
-                                </p>
-                            </div>
-                            <div class="text-center md:text-right">
-                                <div class="text-7xl md:text-9xl font-black text-gold tracking-tighter tabular-nums drop-shadow-2xl">${isAnnual ? top.annual : top.total}</div>
-                                <div class="text-slate-500 text-xs font-black tracking-[0.3em] uppercase mt-2">${isAnnual ? 'Annual High Score' : 'Lifetime Total Score'}</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            if (rankBody) {
-                rankBody.innerHTML = data.map((p, i) => `
-                    <tr class="hover:bg-white/5 transition-colors group">
-                        <td class="p-6 text-center">
-                            <span class="text-2xl font-black italic ${i === 0 ? 'text-gold' : i === 1 ? 'text-slate-300' : i === 2 ? 'text-orange-700' : 'text-slate-700'}">${i + 1}</span>
-                        </td>
-                        <td class="p-6 font-bold text-white text-xl group-hover:text-gold transition-colors">${p.name}</td>
-                        <td class="p-6 text-center text-slate-500 font-medium">${p.games}</td>
-                        <td class="p-6 text-right font-black text-3xl text-gold tabular-nums">${isAnnual ? p.annual : p.total}</td>
-                    </tr>
-                `).join('');
-            }
-        }
-
-        // --- SCORE TABLE LOGIC ---
-        const scoreData = {
-            parent: [
-                ["1翻", "1,500 / -", "-", "2,000 / 700オール"],
-                ["2翻", "2,900 / 1,000オール", "2,400 / 800オール", "3,900 / 1,300オール"],
-                ["3翻", "5,800 / 2,000オール", "4,800 / 1,600オール", "7,700 / 2,600オール"],
-                ["4翻", "11,600 (12,000) / 4,000オール", "9,600 / 3,200オール", "11,600 (12,000) / 4,000オール"],
-                ["満貫", "12,000 / 4,000オール", "12,000 / 4,000オール", "12,000 / 4,000オール"],
-                ["跳満", "18,000 / 6,000オール", "18,000 / 6,000オール", "18,000 / 6,000オール"]
-            ],
-            child: [
-                ["1翻", "1,000 / -", "-", "1,300 / 300・500"],
-                ["2翻", "2,000 / 400・700", "1,600 / 400・800", "2,600 / 700・1,300"],
-                ["3翻", "3,900 / 1,000・2,000", "3,200 / 800・1,600", "5,200 / 1,300・2,600"],
-                ["4翻", "7,700 (8,000) / 2,000・4,000", "6,400 / 1,600・3,200", "7,700 (8,000) / 2,000・4,000"],
-                ["満貫", "8,000 / 2,000・4,000", "8,000 / 2,000・4,000", "8,000 / 2,000・4,000"],
-                ["跳満", "12,000 / 3,000・6,000", "12,000 / 3,000・6,000", "12,000 / 3,000・6,000"]
-            ]
-        };
-
-        function switchScoreTab(type) {
-            document.querySelectorAll('.tab-btn').forEach(b => {
-                b.classList.remove('active', 'bg-gold', 'text-midnight');
-                b.classList.add('glass-panel', 'text-slate-400');
-            });
-            const btn = document.getElementById('btn-score-' + type);
-            if(btn) {
-                btn.classList.add('active', 'bg-gold', 'text-midnight');
-                btn.classList.remove('glass-panel', 'text-slate-400');
-            }
-
-            const tbody = document.getElementById('score-table-body');
-            if(tbody) {
-                tbody.innerHTML = scoreData[type].map(row => `
-                    <tr class="hover:bg-white/5 transition-colors">
-                        <td class="p-4 font-bold text-gold">${row[0]}</td>
-                        <td class="p-4 text-white">${row[1]}</td>
-                        <td class="p-4 text-slate-400">${row[2]}</td>
-                        <td class="p-4 text-slate-400">${row[3]}</td>
-                    </tr>
-                `).join('');
-            }
-        }
-
-        // --- THREE.JS BACKGROUND ---
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-        const geometry = new THREE.BoxGeometry(1.2, 1.6, 0.7);
-        const tiles = [];
-        for (let i = 0; i < 15; i++) {
-            const material = new THREE.MeshStandardMaterial({ 
-                color: i % 3 === 0 ? 0xffffff : (i % 3 === 1 ? 0x1e293b : 0xfbbf24),
-                roughness: 0.2,
-                metalness: 0.1
-            });
-            const tile = new THREE.Mesh(geometry, material);
-            tile.position.set((Math.random()-0.5)*40, (Math.random()-0.5)*40, (Math.random()-0.5)*15);
-            tile.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
-            scene.add(tile);
-            tiles.push({ mesh: tile, rs: Math.random()*0.01 });
-        }
-        
-        const light = new THREE.PointLight(0xffffff, 1);
-        light.position.set(10, 10, 10);
-        scene.add(light);
-        scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-        camera.position.z = 15;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            tiles.forEach(t => {
-                t.mesh.rotation.x += t.rs;
-                t.mesh.rotation.y += t.rs;
-                t.mesh.position.y -= 0.01;
-                if(t.mesh.position.y < -20) t.mesh.position.y = 20;
-            });
-            renderer.render(scene, camera);
-        }
-        window.onload = animate;
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-    </script>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="ja"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;雀荘 はちのこ - Hachinoko Mahjong Store&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&amp;family=Noto+Sans+JP:wght@300;400;700&amp;family=Inter:wght@400;700&amp;display=swap" rel="stylesheet"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>:root {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--mahjong-green: #064e3b;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--deep-navy: #020617;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--tile-white: #f8fafc;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--accent-red: #be123c;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--gold: #d4af37;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--silver: #c0c0c0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--bronze: #cd7f32;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Noto Sans JP', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--mahjong-green);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--tile-white);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: background-color 0.5s ease;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>overflow-x: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body.is-top {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--deep-navy);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.serif { font-family: 'Noto Serif JP', serif; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.font-numeric { font-family: 'Inter', 'Noto Sans JP', sans-serif; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>#bg-canvas {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: fixed;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>top: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>left: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>z-index: -1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>pointer-events: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>opacity: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: opacity 0.5s ease;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body.is-top #bg-canvas {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>opacity: 1;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.bg-pattern {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-size: 40px 40px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.page-transition {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: opacity 0.4s ease, transform 0.4s ease;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.hidden { display: none; opacity: 0; transform: translateY(20px); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.visible { display: block; opacity: 1; transform: translateY(0); }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tile-card {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(226, 232, 240, 0.9));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #1e293b;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 1rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2), inset 0 -4px 0 #cbd5e1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: transform 0.2s;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>backdrop-filter: blur(4px);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tile-card:active { transform: scale(0.98); box-shadow: 0 5px 10px rgba(0,0,0,0.2); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.fab-back {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: fixed;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>bottom: 2rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>right: 2rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>z-index: 100;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: white;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--mahjong-green);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 56px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 56px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 50%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 10px 25px rgba(0,0,0,0.4), inset 0 -3px 0 #cbd5e1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>opacity: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>pointer-events: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(20px);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.fab-back.show {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>opacity: 1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>pointer-events: auto;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(0);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.fab-back:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(-5px);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 15px 30px rgba(0,0,0,0.5), inset 0 -3px 0 #cbd5e1;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.fab-back svg {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 28px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 28px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.rule-section {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(0,0,0,0.3);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 1.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 2rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 2rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid rgba(255,255,255,0.05);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.rule-list {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>list-style: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.rule-list li {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding-left: 1.25rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 0.75rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.6;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #d1d5db;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.rule-list li::before {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>content: "・";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>left: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: inherit;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.mahjong-tile-text {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.2em;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>vertical-align: middle;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.rule-h3 {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.25rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 2rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 1.25rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-left: 4px solid #10b981;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding-left: 0.75rem;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.rule-sub-h4 {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #f3f4f6;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 1rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 0.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.example-box {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(255,255,255,0.05);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 0.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 1rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 0.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.95rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #9ca3af;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body class="bg-pattern min-h-screen is-top"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;canvas id="bg-canvas"&gt;&lt;/canvas&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Floating Back Button --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button id="floating-back" onclick="navigateTo('top')" class="fab-back" title="トップへ戻る"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"&gt;&lt;/path&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Header --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;nav class="sticky top-0 z-50 bg-black/40 backdrop-blur-md border-b border-white/10 p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="max-w-7xl mx-auto flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1 class="serif text-2xl tracking-tighter cursor-pointer" onclick="navigateTo('top')"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>雀荘 &lt;span class="text-emerald-400"&gt;はちのこ&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/nav&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="max-w-7xl mx-auto px-4 py-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Top Page --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;section id="top" class="page-transition visible"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="text-center py-16 md:py-24 space-y-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;p class="text-emerald-600 tracking-[0.5em] text-sm uppercase font-bold"&gt;The Ultimate Battleground&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="max-w-5xl mx-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h2 class="serif text-4xl md:text-7xl leading-tight mb-8 text-gray-200 drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>配られた運命を&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span&gt;思考で支配せよ&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="text-gray-300 text-base md:text-lg font-medium leading-loose"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>静寂の中に響く牌の音。研ぎ澄まされた一打が, 勝負の行方を決定する。&lt;br class="hidden md:block"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>はちのこは, 真剣勝負を愛するすべての雀士に最高の舞台を提供します。</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- Menu Cards --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12 mb-12"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button onclick="navigateTo('seat')" class="tile-card p-6 md:p-8 text-left group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="text-emerald-700 text-xs font-bold tracking-widest uppercase block mb-3"&gt;Preparation&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="text-xl font-bold mb-3 flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>席決め</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span class="group-hover:translate-x-1 transition-transform"&gt;→&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="text-gray-600 text-xs leading-relaxed"&gt;公平な勝負はここから。場所を決める作法&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button onclick="navigateTo('rules-4')" class="tile-card p-6 md:p-8 text-left group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="text-blue-700 text-xs font-bold tracking-widest uppercase block mb-3"&gt;Standard&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="text-xl font-bold mb-3 flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>四麻ルール</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span class="group-hover:translate-x-1 transition-transform"&gt;→&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="text-gray-600 text-xs leading-relaxed"&gt;王道の四人打ち。当店の基本ルール&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button onclick="navigateTo('rules-3')" class="tile-card p-6 md:p-8 text-left group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="text-accent-red text-xs font-bold tracking-widest uppercase block mb-3"&gt;High Speed&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="text-xl font-bold mb-3 flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>三麻ルール</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span class="group-hover:translate-x-1 transition-transform"&gt;→&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="text-gray-600 text-xs leading-relaxed"&gt;刹那の攻防を楽しむ三人打ちルール&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button onclick="navigateTo('ranking')" class="tile-card p-6 md:p-8 text-left group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="text-yellow-700 text-xs font-bold tracking-widest uppercase block mb-3"&gt;Hall of Fame&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="text-xl font-bold mb-3 flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>ランキング</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span class="group-hover:translate-x-1 transition-transform"&gt;→&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="text-gray-600 text-xs leading-relaxed"&gt;覇者たちの軌跡。現在のポイント順位&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Seat Selection Section --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;section id="seat" class="page-transition hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="bg-black/30 rounded-3xl p-8 md:p-12 backdrop-blur-sm max-w-4xl mx-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h2 class="serif text-3xl mb-8 border-b border-emerald-500/30 pb-4 text-emerald-400 text-center"&gt;席決め、起家決め&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="space-y-12"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-2"&gt;席決め&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="space-y-5 pl-4 text-gray-200 text-lg leading-relaxed"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p&gt;1.&lt;span class="mahjong-tile-text"&gt;🀀🀁🀂🀃&lt;/span&gt;牌を裏返しにし混ぜ、適当な順番で一人ずつ引いていく。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p&gt;2.&lt;span class="mahjong-tile-text"&gt;🀀&lt;/span&gt;を引いた人が、好きな席を指定し、その席を東家として基準になる。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p&gt;3.他の人は引いた牌の席に着く。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p class="text-emerald-400 font-medium text-base mt-4"&gt;※三麻の場合は&lt;span class="mahjong-tile-text"&gt;🀀🀁🀂&lt;/span&gt;牌を使用する。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-2"&gt;起家決め&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="space-y-5 pl-4 text-gray-200 text-lg leading-relaxed"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p&gt;1.&lt;span class="mahjong-tile-text"&gt;🀀&lt;/span&gt;を引いた人が仮仮親となってサイコロを振る。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p&gt;2.出た目の人が仮親となる。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p&gt;3.仮親になった人がサイコロを振り。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p&gt;4.出た目の人が起家（最初の親）となります。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p class="text-emerald-400 font-medium text-base mt-4"&gt;※三麻の場合、サイコロの出た目の席が空席の場合は再度サイコロを振り直します。（空席ではない目が出るまで）&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Ranking Page Section --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;section id="ranking" class="page-transition hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="bg-black/30 rounded-3xl p-6 md:p-12 border border-yellow-500/20 shadow-2xl shadow-yellow-500/5 max-w-4xl mx-auto space-y-16"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;!-- 年間 総合ポイント順位 --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="flex justify-between items-end mb-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h2 class="serif text-2xl md:text-3xl text-yellow-500"&gt;年間 総合ポイント順位&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span class="update-date text-[10px] md:text-xs text-gray-500 font-numeric" id="date-point"&gt;Loading...&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="overflow-hidden rounded-xl border border-white/10 bg-black/20"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;table class="w-full text-left font-numeric table-fixed"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;thead class="bg-white/5 text-gray-400 text-xs md:text-sm"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;th class="p-3 md:p-4 w-20"&gt;Rank&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;th class="p-3 md:p-4"&gt;Player&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;th class="p-3 md:p-4 text-right w-32"&gt;Point&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tbody id="point-ranking-body"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;tr&gt;&lt;td colspan="3" class="p-8 text-center text-gray-500"&gt;読み込み中...&lt;/td&gt;&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;!-- ハイスコアランキング --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="flex justify-between items-end mb-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h2 class="serif text-2xl md:text-3xl text-yellow-500"&gt;ハイスコアランキング&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span class="update-date text-[10px] md:text-xs text-gray-500 font-numeric" id="date-score"&gt;Loading...&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="overflow-hidden rounded-xl border border-white/10 bg-black/20"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;table class="w-full text-left font-numeric table-fixed"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;thead class="bg-white/5 text-gray-400 text-xs md:text-sm"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;th class="p-3 md:p-4 w-20"&gt;Rank&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;th class="p-3 md:p-4"&gt;Player&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;th class="p-3 md:p-4 text-right w-32"&gt;Score&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tbody id="score-ranking-body"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;tr&gt;&lt;td colspan="3" class="p-8 text-center text-gray-500"&gt;読み込み中...&lt;/td&gt;&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- 4-Player Rules --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;section id="rules-4" class="page-transition hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="max-w-4xl mx-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h2 class="serif text-3xl mb-8 border-b border-blue-500/30 pb-4 text-blue-400 text-center"&gt;四麻 基本ゲームルール&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="rule-section"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;ul class="rule-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;東南戦　25,000点持ちの30,000点返し、喰いタンあり、役の後付けなしのアリナシルールです。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;定められた一式の麻雀牌の内、5萬・5筒・5索の各1枚が赤牌となっています。（赤牌の5萬・5筒・5索の各1枚はドラとする）&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;槓ドラ、裏ドラあり。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;一本場は300点です。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;形式テンパイありで、テンパイ連荘です。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;リーチ棒、積棒はアガリ者が取得する。（供託があり、南四局が流局した場合、供託はトップ者に加算する）&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;ダブロン、トリロン無し。頭ハネです。（ロン牌を捨てた人を基準にツモ番が近い人がアガる権利）&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;得点計算は切り上げ満貫。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;南4局終了時、誰も30,000点に満たなかった場合は西場に入り、西4局まで行う。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;西4局終了時、誰も30,000点に満たなかった場合は北場に入り、北4局まで行う。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;北4局終了時、誰も30,000点に満たなかった場合はトップ者が30,000点になるよう、他3人が足りない点数を割り勘し、トップ者に渡し終了する。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;ハコテン（持ち点がマイナス）になった時点でゲーム終了。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;ハコテンになる局の支払いは、全点棒をアガリ者に渡すこと。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="example-box"&gt;例：2,000点持っていて、8,000点を振り込んだ場合は、アガリ者に全点棒の2,000点を支払い、ゲーム終了となる。&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/ul&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="rule-h3"&gt;途中流局について&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="mb-4 text-sm text-gray-400"&gt;（通常の流局と同じで積棒は増えます。親も流れます）&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;ul class="rule-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;四風連打：1巡目に4人が同じ風牌（東・南・西・北）を連続して捨てると成立&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;四カン流れ：2人以上が合計4つのカンをした時に成立&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="example-box"&gt;（4回目のカンで捨て牌がロンされなかった時点で四カン流れとなります。槍槓（チャンカン）があった場合は、四カン流れより優先されます）&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;九種九牌、4人リーチは続行です。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;流し満貫あり&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;オープンリーチなし&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/ul&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="rule-h3"&gt;フリテン、チョンボ&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;ul class="rule-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;フリテンリーチ、リーチ後の見逃しはツモのみあがれます。ロンはできません。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li class="font-bold text-white"&gt;「同巡内フリテン」&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="pl-5 text-sm mb-4"&gt;自分がテンパイ（役あり、リーチしていない）していて、他家から自分のアガリ牌が出たときに、その牌でロンをしなかった時点で、「同巡内フリテン」となる。同巡で他の他家がアガリ牌を捨てたとしてもロンすることはできません。同巡内フリテンは自分のツモ番を経て解消されます。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li class="font-bold text-white"&gt;チョンボ（誤ロン、役無しアガリ、流局ノーテンリーチ）&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="example-box"&gt;【罰符：満貫払い】&lt;br&gt;親がチョンボした場合 → 子に4,000点ずつ支払う&lt;br&gt;子がチョンボした場合 → 親に4,000点、子に2,000点ずつ支払う&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;チョンボした局はリセットされる。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="pl-5 text-sm mb-4"&gt;（その局をやり直しする。局は流れません）リーチ棒はリーチ者に戻ります。積み棒はそのまま。連荘数も増えません。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;誤チー、誤ポンはお咎めなし。謝って何事もなかったように振る舞いましょう。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;多牌、少牌はアガリ放棄。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/ul&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="rule-h3"&gt;ポイントの計算&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;ul class="rule-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;ウマ（順位点）あり →【 5-10 】&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="grid grid-cols-2 gap-2 text-sm text-gray-200 pl-5 mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div&gt;1位 : +10,000点 （+10P）&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div&gt;2位 : +5,000点 （+5P）&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div&gt;3位 : -5,000点 （-5P）&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div&gt;4位 : -10,000点 （-10P）&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="pl-5 text-xs text-emerald-400"&gt;※100点単位でも同点の場合は上家優先 （「起家から近い方」が優先）です。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li class="mt-4"&gt;オカ（トップ賞）あり → 20,000点（20P）&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="pl-5 text-xs text-emerald-400"&gt;※100点単位でも同点の場合は上家優先 （「起家から近い方」が優先）です。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/ul&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="rule-h3"&gt;ポイントの計算方法&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="space-y-4 text-sm text-gray-300"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p&gt;1. 原点基準（30,000点）でプラス・マイナスを算出&lt;br&gt;「ゲーム終了時の持ち点」－「30,000点」でプラス・マイナスを算出します。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p&gt;2. 点数をポイントに換算する&lt;br&gt;100点単位は五捨六入で計算します。（500点以下→0点、600点以上→1,000点として扱う）1,000点＝１ポイントで換算する。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p&gt;3. トップ者にオカを加算する&lt;br&gt;それぞれのポイントを発表し、トップ者に20ポイントを加算します。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="example-box"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;strong&gt;例1：ゲーム終了時、18,500点だった場合の計算方法&lt;/strong&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>1. 18,500点－30,000点 = －11,500点&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>2. 【－11,500点】 →（五捨六入）→ 【－11,000】 →（ポイント換算）→ 【－11】&lt;br&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;strong&gt;例2：ゲーム終了時、55,600点（トップ）だった場合の計算方法&lt;/strong&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>1. 55,600点－30,000点 = 25,600点&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>2. 【25,600点】 →（五捨六入）→ 【26,000】 →（ポイント換算）→ 【＋26】&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>3. 26＋20(オカ)＝46 → 【＋46】</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- 3-Player Rules --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;section id="rules-3" class="page-transition hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="max-w-4xl mx-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h2 class="serif text-3xl mb-8 border-b border-accent-red/30 pb-4 text-accent-red text-center"&gt;三麻 基本ゲームルール&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="rule-section"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;ul class="rule-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;東南戦　35,000点持ちの40,000点返し、喰いタンあり、役の後付けなしのアリナシルールです。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;定められた一式の麻雀牌の内、5萬・5筒・5索の各1枚が赤牌となっています。（赤牌の5萬・5筒・5索の各1枚はドラとする）&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;槓ドラ、裏ドラあり。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;一本場は300点です。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;形式テンパイありで、テンパイ連荘です。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li class="font-bold text-white"&gt;流局時のノーテン罰符について&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="pl-5 text-sm"&gt;一人テンパイの場合、ノーテンの人がテンパイ者に1,000点支払う。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="pl-5 text-sm"&gt;二人テンパイの場合、ノーテンの人がテンパイ者に1,000点ずつ支払う。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="pl-5 text-sm mb-4"&gt;全員テンパイ、全員ノーテンの場合は支払いはありません。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;リーチ棒、供託はアガリ者が取得する。（南四局が流局した場合、トップ者に加算する）&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;ダブロン、トリロン無し。頭ハネです。（ロン牌を捨てた人を基準にツモ番が近い人がアガる権利）&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;得点計算は切り上げ満貫。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;南4局終了時、誰も40,000点に満たなかった場合は西場に入り、西4局まで行う。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;西4局終了時、誰も40,000点に満たなかった場合は北場に入り、北4局まで行う。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;北4局終了時、誰も40,000点に満たなかった場合はトップ者が40,000点になるよう、他3人が足りない点数を割り勘し、トップ者に渡し終了する。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;ハコテン（持ち点がマイナス）になった時点でゲーム終了。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;ハコテンになる局の支払いは、全点棒をアガリ者に渡すこと。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="example-box"&gt;例：2,000点持っていて、8,000点を振り込んだ場合は、アガリ者に全点棒の2,000点を支払い、ゲーム終了となる。&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/ul&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="rule-h3"&gt;途中流局について&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="mb-4 text-sm text-gray-400"&gt;（通常の流局と同じで積棒は増えます。親も流れます）&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;ul class="rule-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;四風連打：1巡目に4人が同じ風牌（東・南・西・北）を連続して捨てると成立&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;四カン流れ：2人以上が合計4つのカンをした時に成立&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="example-box"&gt;（4回目のカンで捨て牌がロンされなかった時点で四カン流れとなります。槍槓（チャンカン）があった場合は、四カン流れより優先されます）&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;九種九牌、4人リーチは続行です。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;流し満貫あり&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;オープンリーチなし&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/ul&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="rule-h3"&gt;フリテン、チョンボ&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;ul class="rule-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;フリテンリーチ、リーチ後の見逃しはツモのみあがれます。ロンはできません。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li class="font-bold text-white"&gt;「同巡内フリテン」&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="pl-5 text-sm mb-4"&gt;自分がテンパイ（役あり、リーチしていない）していて、他家から自分のアガリ牌が出たときに、その牌でロンをしなかった時点で、「同巡内フリテン」となる。同巡で他の他家がアガリ牌を捨てたとしてもロンすることはできません。同巡内フリテンは自分のツモ番を経て解消されます。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li class="font-bold text-white"&gt;チョンボ（誤ロン、役無しアガリ、流局ノーテンリーチ）&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="example-box"&gt;【罰符：満貫払い】&lt;br&gt;親がチョンボした場合 → 子に4,000点ずつ支払う&lt;br&gt;子がチョンボした場合 → 親に4,000点、子に2,000点ずつ支払う&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;チョンボした局はリセットされる。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="pl-5 text-sm mb-4"&gt;（その局をやり直しする。局は流れません）リーチ棒はリーチ者に戻ります。積み棒はそのまま。連荘数も増えません。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;誤チー、誤ポンはお咎めなし。謝って何事もなかったように振る舞いましょう。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;多牌、少牌はアガリ放棄。&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/ul&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="rule-h3"&gt;ポイントの計算&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;ul class="rule-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;ウマ（順位点）あり&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="grid grid-cols-1 gap-2 text-sm text-gray-200 pl-5 mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div&gt;1位 : +10,000点 （+10P）&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div&gt;2位 : 0点 （±0P）&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div&gt;3位 : -10,000点 （-10p）&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="pl-5 text-xs text-emerald-400"&gt;※100点単位でも同点の場合は上家優先 （「起家から近い方」が優先）です。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li class="mt-4"&gt;オカ（トップ賞）あり → 15,000点（15P）&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="pl-5 text-xs text-emerald-400"&gt;※100点単位でも同点の場合は上家優先 （「起家から近い方」が優先）です。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/ul&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="rule-h3"&gt;ポイントの計算方法&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="space-y-4 text-sm text-gray-300"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p&gt;1. 原点基準（40,000点）でプラス・マイナスを算出&lt;br&gt;「ゲーム終了時の持ち点」－「40,000点」でプラス・マイナスを算出します。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p&gt;2. 点数をポイントに換算する&lt;br&gt;100点単位は五捨六入で計算します。（500点以下→0点、600点以上→1,000点として扱う）1,000点＝１ポイントで換算する。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p&gt;3. トップ者にオカを加算する&lt;br&gt;それぞれのポイントを発表し、トップ者に20ポイントを加算します。&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="example-box"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;strong&gt;例1：ゲーム終了時、18,500点だった場合の計算方法&lt;/strong&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>1. 18,500点－40,000点 = －21,500点&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>2. 【－21,500点】 →（五捨六入）→ 【－21,000】 →（ポイント換算）→ 【－21】&lt;br&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;strong&gt;例2：ゲーム終了時、55,600点（トップ）だった場合の計算方法&lt;/strong&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>1. 55,600点－40,000点 = 15,600点&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>2. 【15,600点】 →（五捨六入）→ 【16,000】 →（ポイント換算）→ 【＋16】&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>3. 16＋15(オカ)＝31 → 【＋31】</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;footer class="mt-20 border-t border-white/5 p-8 text-center text-gray-500 text-xs font-numeric"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p&gt;&amp;copy; 2026 雀荘 はちのこ - Hachinoko Mahjong. All Rights Reserved.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/footer&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const POINT_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVI7OY-KTFnW8bTeKt7NgmVkxW5VLKEsNfJmMQYBkQwCB5TJZv5xzsfZ3QlKEx7NOO9NCnDJy43Gzw/pub?gid=0&amp;single=true&amp;output=csv";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const SCORE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVI7OY-KTFnW8bTeKt7NgmVkxW5VLKEsNfJmMQYBkQwCB5TJZv5xzsfZ3QlKEx7NOO9NCnDJy43Gzw/pub?gid=1687430182&amp;single=true&amp;output=csv";</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>let scene, camera, renderer, tiles = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const TILE_COUNT = 15;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Background Animation (Three.js)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function initThree() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>scene = new THREE.Scene();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), alpha: true, antialias: true });</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderer.setSize(window.innerWidth, window.innerHeight);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderer.setPixelRatio(window.devicePixelRatio);</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>scene.add(new THREE.AmbientLight(0xffffff, 0.4));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const geometry = new THREE.BoxGeometry(0.6, 0.8, 0.4);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const material = new THREE.MeshPhongMaterial({ color: 0xf8fafc });</p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let i = 0; i &lt; TILE_COUNT; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const tile = new THREE.Mesh(geometry, material);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>resetTile(tile, true);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>scene.add(tile);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>tiles.push(tile);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>camera.position.z = 5;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>animateThree();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function resetTile(tile, initial = false) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tile.position.x = (Math.random() - 0.5) * 12;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tile.position.y = initial ? (Math.random() - 0.5) * 15 : 8;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tile.position.z = (Math.random() - 0.5) * 5;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tile.userData.speed = 0.01 + Math.random() * 0.015;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tile.userData.rotSpeed = { x: (Math.random()-0.5)*0.01, y: (Math.random()-0.5)*0.01, z: (Math.random()-0.5)*0.01 };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function animateThree() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>requestAnimationFrame(animateThree);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tiles.forEach(tile =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>tile.position.y -= tile.userData.speed;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>tile.rotation.x += tile.userData.rotSpeed.x;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (tile.position.y &lt; -8) resetTile(tile);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderer.render(scene, camera);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// SPA Navigation</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function navigateTo(pageId) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.querySelectorAll('.page-transition').forEach(sec =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>sec.classList.remove('visible');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>sec.classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const body = document.body;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const fab = document.getElementById('floating-back');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (pageId === 'top') {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>body.classList.add('is-top');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>fab.classList.remove('show');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>body.classList.remove('is-top');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>fab.classList.add('show');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>setTimeout(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const target = document.getElementById(pageId);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>target.classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>target.classList.add('visible');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>window.scrollTo({ top: 0, behavior: 'smooth' });</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}, 50);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (pageId === 'ranking') loadAllRankings();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// CSV Fetching &amp; Ranking Display</p>
+<p class="p1"><span class="Apple-converted-space">        </span>async function fetchCsvData(url) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const response = await fetch(url, { cache: 'no-cache' });</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const text = await response.text();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return text.split(/\r?\n/).filter(line =&gt; line.trim() !== "").map(line =&gt; line.split(',').map(c =&gt; c.replace(/^"(.*)"$/, '$1').trim()));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} catch (e) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>console.error(e);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return null;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function renderRankingTable(rows, containerId) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const tbody = document.getElementById(containerId);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (!rows) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>tbody.innerHTML = '&lt;tr&gt;&lt;td colspan="3" class="p-8 text-center text-red-400"&gt;Error&lt;/td&gt;&lt;/tr&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const dataRows = rows.slice(1, 6);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let html = "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let i = 0; i &lt; 5; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const row = dataRows[i];</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const isInvalid = !row || !row[1] || row[1] === "0";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>html += `</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;tr class="border-b border-white/5 hover:bg-white/5 transition"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;td class="p-4 font-bold text-white font-numeric"&gt;${i + 1}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;td class="p-4 font-bold text-gray-200"&gt;${isInvalid ? '該当者なし' : row[1]}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;td class="p-4 text-right font-numeric font-bold text-white"&gt;${isInvalid ? '-' : row[2]}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tbody.innerHTML = html;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>async function loadAllRankings() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const today = new Date().toLocaleDateString('ja-JP');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const [pRows, sRows] = await Promise.all([fetchCsvData(POINT_CSV_URL), fetchCsvData(SCORE_CSV_URL)]);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderRankingTable(pRows, 'point-ranking-body');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('date-point').innerText = "Updated: " + today;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderRankingTable(sRows, 'score-ranking-body');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('date-score').innerText = "Updated: " + today;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>window.onload = initThree;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>window.onresize = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>camera.aspect = window.innerWidth / window.innerHeight;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>camera.updateProjectionMatrix();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderer.setSize(window.innerWidth, window.innerHeight);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
 </body>
 </html>
