@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -6,6 +7,9 @@
     <title>雀荘 はちのこ - Hachinoko Mahjong Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Firebase SDK Compat -->
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=Noto+Sans+JP:wght@300;400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -192,7 +196,7 @@
             width: 100%;
         }
         .col-rank { width: 50px; }
-        .col-score { width: 90px; }
+        .col-score { width: 110px; }
         .col-player { width: auto; }
         .truncate-name {
             white-space: nowrap;
@@ -202,6 +206,19 @@
             width: 100%;
         }
     </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "firebase/": "https://esm.sh/firebase@^12.8.0/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
 </head>
 <body class="bg-pattern min-h-screen is-top">
 
@@ -305,7 +322,7 @@
             </div>
         </section>
 
-        <!-- Ranking Page Section (UPDATED) -->
+        <!-- Ranking Page Section -->
         <section id="ranking" class="page-transition hidden">
             <div class="bg-black/30 rounded-3xl p-6 md:p-12 border border-yellow-500/20 shadow-2xl shadow-yellow-500/5 max-w-4xl mx-auto space-y-16">
                 <!-- 年間 総合ポイント順位 TOP5 -->
@@ -351,20 +368,20 @@
                         </table>
                     </div>
                     <p class="mt-4 text-xs text-gray-400 leading-relaxed">
-                        ※ 規定回数（25半荘）を超えていない場合は「該当者なし」と表示されます。
+                        ※ 規定回数（25戦）を超えていない場合は「該当者なし」と表示されます。
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- 4-Player Rules -->
+        <!-- Rules-4, Rules-3 ... (省略なしで継続) -->
         <section id="rules-4" class="page-transition hidden">
+            <!-- 四麻コンテンツ (元のまま) -->
             <div class="max-w-4xl mx-auto space-y-6">
                 <div class="text-center mb-10">
                     <h2 class="serif text-3xl md:text-4xl text-blue-400 mb-2">四麻 基本ゲームルール</h2>
                     <p class="text-gray-400 text-sm tracking-widest uppercase">Standard 4-Player Rules</p>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="rule-card">
                         <div class="section-header">基本システム</div>
@@ -381,7 +398,6 @@
                             </ul>
                         </div>
                     </div>
-
                     <div class="rule-card">
                         <div class="section-header">対局の終了条件</div>
                         <div class="p-5">
@@ -395,7 +411,6 @@
                             <div class="example-box">例：2,000点持っていて、8,000点を振り込んだ場合は、アガリ者に全点棒の2,000点を支払い、ゲーム終了となる。</div>
                         </div>
                     </div>
-
                     <div class="rule-card">
                         <div class="section-header">途中流局について</div>
                         <div class="p-5">
@@ -412,7 +427,6 @@
                             </ul>
                         </div>
                     </div>
-
                     <div class="rule-card">
                         <div class="section-header">フリテン・チョンボ</div>
                         <div class="p-5">
@@ -436,8 +450,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- 4-Player Point Section -->
                 <div class="rule-card">
                     <div class="section-header">ポイントの計算</div>
                     <div class="p-6 md:p-8">
@@ -472,7 +484,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="space-y-4">
                                 <h4 class="text-emerald-400 font-bold mb-4">ポイントの計算方法</h4>
                                 <div class="space-y-4">
@@ -502,21 +513,20 @@
             </div>
         </section>
 
-        <!-- 3-Player Rules -->
         <section id="rules-3" class="page-transition hidden">
+            <!-- 三麻コンテンツ (元のまま) -->
             <div class="max-w-4xl mx-auto space-y-6">
                 <div class="text-center mb-10">
                     <h2 class="serif text-3xl md:text-4xl text-accent-red mb-2">三麻 基本ゲームルール</h2>
                     <p class="text-gray-400 text-sm tracking-widest uppercase">High-Speed 3-Player Rules</p>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="rule-card">
                         <div class="section-header" style="border-left-color: var(--accent-red);">基本システム</div>
                         <div class="p-5">
                             <ul class="rule-list">
                                 <li>東南戦　35,000点持ちの40,000点返し、喰いタンあり、役の後付けなしのアリナシルールです。</li>
-                                <li>定められた一式の麻雀牌の内、5萬・5筒・5索の各1枚が赤牌となっています。（赤牌の5萬・5筒・5索の各1枚はドラとする）</li>
+                                <li>定められた一式の麻銭牌の内、5萬・5筒・5索の各1枚が赤牌となっています。（赤牌の5萬・5筒・5索の各1枚はドラとする）</li>
                                 <li>槓ドラ、裏ドラあり。</li>
                                 <li>一本場は300点です。</li>
                                 <li>形式テンパイありで、テンパイ連荘です。</li>
@@ -532,7 +542,6 @@
                             </ul>
                         </div>
                     </div>
-
                     <div class="rule-card">
                         <div class="section-header" style="border-left-color: var(--accent-red);">対局の終了条件</div>
                         <div class="p-5">
@@ -546,7 +555,6 @@
                             <div class="example-box">例：2,000点持っていて、8,000点を振り込んだ場合は、アガリ者に全点棒の2,000点を支払い、ゲーム終了となる。</div>
                         </div>
                     </div>
-
                     <div class="rule-card">
                         <div class="section-header" style="border-left-color: var(--accent-red);">途中流局について</div>
                         <div class="p-5">
@@ -563,7 +571,6 @@
                             </ul>
                         </div>
                     </div>
-
                     <div class="rule-card">
                         <div class="section-header" style="border-left-color: var(--accent-red);">フリテン・チョンボ</div>
                         <div class="p-5">
@@ -587,8 +594,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- 3-Player Point Section -->
                 <div class="rule-card">
                     <div class="section-header" style="border-left-color: var(--accent-red);">ポイントの計算</div>
                     <div class="p-6 md:p-8">
@@ -620,7 +625,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="space-y-4">
                                 <h4 class="text-accent-red font-bold mb-4">ポイントの計算方法</h4>
                                 <div class="space-y-4">
@@ -656,8 +660,19 @@
     </footer>
 
     <script>
-        const POINT_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVI7OY-KTFnW8bTeKt7NgmVkxW5VLKEsNfJmMQYBkQwCB5TJZv5xzsfZ3QlKEx7NOO9NCnDJy43Gzw/pub?gid=0&single=true&output=csv";
-        const SCORE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVI7OY-KTFnW8bTeKt7NgmVkxW5VLKEsNfJmMQYBkQwCB5TJZv5xzsfZ3QlKEx7NOO9NCnDJy43Gzw/pub?gid=1687430182&single=true&output=csv";
+        // Firebase Configuration (Jambo Proと同じ設定)
+        const firebaseConfig = {
+            apiKey: "AIzaSyChmp_v3_PKy_7MvHTWRI-vk-NzUVs7Xcs",
+            authDomain: "jambopro-a311e.firebaseapp.com",
+            projectId: "jambopro-a311e",
+            storageBucket: "jambopro-a311e.firebasestorage.app",
+            messagingSenderId: "661021094699",
+            appId: "1:661021094699:web:252aa01d90b0da4ac38b6e"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
         let scene, camera, renderer, tiles = [];
         const TILE_COUNT = 15;
@@ -725,41 +740,76 @@
             if (pageId === 'ranking') loadAllRankings();
         }
 
-        // CSV Fetching & Ranking Display
-        async function fetchCsvData(url) {
+        // Aggregate Firestore data for Rankings
+        async function fetchRankingData() {
             try {
-                const response = await fetch(url, { cache: 'no-cache' });
-                const text = await response.text();
-                return text.split(/\r?\n/).filter(line => line.trim() !== "").map(line => line.split(',').map(c => c.replace(/^"(.*)"$/, '$1').trim()));
+                const snapshot = await db.collection('records').get();
+                const currentYear = new Date().getFullYear().toString();
+                const stats = {};
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const recordYear = new Date(data.timestamp).getFullYear().toString();
+                    if (recordYear !== currentYear) return; // 当年のみ
+
+                    data.results.forEach(res => {
+                        if (!stats[res.name]) {
+                            stats[res.name] = { name: res.name, totalPt: 0, games: 0, maxScore: 0 };
+                        }
+                        stats[res.name].totalPt += res.point;
+                        stats[res.name].games += 1;
+                        if (res.score > stats[res.name].maxScore) {
+                            stats[res.name].maxScore = res.score;
+                        }
+                    });
+                });
+
+                return Object.values(stats);
             } catch (e) {
-                console.error(e);
+                console.error("Firestore Fetch Error:", e);
                 return null;
             }
         }
 
-        function renderRankingTable(rows, containerId) {
+        function renderRankingTable(data, containerId, type) {
             const tbody = document.getElementById(containerId);
-            if (!rows) {
-                tbody.innerHTML = '<tr><td colspan="3" class="p-8 text-center text-red-400">Error</td></tr>';
+            if (!data) {
+                tbody.innerHTML = '<tr><td colspan="3" class="p-8 text-center text-red-400">Error loading data</td></tr>';
                 return;
             }
-            const dataRows = rows.slice(1, 6);
+
+            let sortedData = [];
+            if (type === 'point') {
+                sortedData = [...data].sort((a, b) => b.totalPt - a.totalPt);
+            } else {
+                // ハイスコアは規定回数（25戦以上）
+                sortedData = [...data].filter(p => p.games >= 25).sort((a, b) => b.maxScore - a.maxScore);
+            }
+
             let html = "";
             for (let i = 0; i < 5; i++) {
-                const row = dataRows[i];
-                // 参照先の値（3カラム目）が "0" または空、あるいは行が存在しない場合は「該当者なし」
-                const isInvalid = !row || !row[1] || row[2] === "0" || row[2] === "";
+                const player = sortedData[i];
+                const isInvalid = !player;
                 
+                let displayVal = "-";
+                if (!isInvalid) {
+                    if (type === 'point') {
+                        displayVal = player.totalPt > 0 ? `+${player.totalPt}` : player.totalPt;
+                    } else {
+                        displayVal = player.maxScore.toLocaleString();
+                    }
+                }
+
                 html += `
                     <tr class="border-b border-white/5 hover:bg-white/5 transition">
                         <td class="p-4 font-bold text-white font-numeric col-rank">${i + 1}</td>
                         <td class="p-4 font-bold col-player">
-                            <span class="truncate-name ${isInvalid ? 'text-gray-500' : 'text-gray-200'}" title="${isInvalid ? '' : row[1]}">
-                                ${isInvalid ? '該当者なし' : row[1]}
+                            <span class="truncate-name ${isInvalid ? 'text-gray-500' : 'text-gray-200'}" title="${isInvalid ? '' : player.name}">
+                                ${isInvalid ? '該当者なし' : player.name}
                             </span>
                         </td>
                         <td class="p-4 text-right font-numeric font-bold col-score ${isInvalid ? 'text-gray-500' : 'text-white'}">
-                            ${isInvalid ? '-' : row[2]}
+                            ${displayVal}
                         </td>
                     </tr>
                 `;
@@ -769,18 +819,24 @@
 
         async function loadAllRankings() {
             const today = new Date().toLocaleDateString('ja-JP');
-            const [pRows, sRows] = await Promise.all([fetchCsvData(POINT_CSV_URL), fetchCsvData(SCORE_CSV_URL)]);
-            renderRankingTable(pRows, 'point-ranking-body');
+            const data = await fetchRankingData();
+            
+            renderRankingTable(data, 'point-ranking-body', 'point');
             document.getElementById('date-point').innerText = "Updated: " + today;
-            renderRankingTable(sRows, 'score-ranking-body');
+            
+            renderRankingTable(data, 'score-ranking-body', 'score');
             document.getElementById('date-score').innerText = "Updated: " + today;
         }
 
         window.onload = initThree;
         window.onresize = () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            if (camera) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+            }
+            if (renderer) {
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
         };
     </script>
 </body>
