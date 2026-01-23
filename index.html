@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -17,6 +16,7 @@
             --deep-navy: #020617;
             --tile-white: #f8fafc;
             --accent-red: #be123c;
+            --accent-blue:#1a73bc;
             --gold: #d4af37;
             --silver: #c0c0c0;
             --bronze: #cd7f32;
@@ -25,7 +25,7 @@
             font-family: 'Noto Sans JP', sans-serif;
             background-color: var(--mahjong-green);
             color: var(--tile-white);
-            transition: background-color 0.5s ease;
+            transition: background-color 0.8s ease;
             overflow-x: hidden;
         }
         body.is-top {
@@ -44,7 +44,7 @@
             z-index: -1;
             pointer-events: none;
             opacity: 0;
-            transition: opacity 0.5s ease;
+            transition: opacity 1s ease;
         }
         body.is-top #bg-canvas {
             opacity: 1;
@@ -61,14 +61,15 @@
         .visible { display: block; opacity: 1; transform: translateY(0); }
         
         .tile-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(226, 232, 240, 0.9));
+            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(226, 232, 240, 0.95));
             color: #1e293b;
             border-radius: 1rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2), inset 0 -4px 0 #cbd5e1;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
             backdrop-filter: blur(4px);
         }
-        .tile-card:active { transform: scale(0.98); box-shadow: 0 5px 10px rgba(0,0,0,0.2); }
+        .tile-card:hover { transform: translateY(-2px); box-shadow: 0 15px 20px -3px rgba(0, 0, 0, 0.4); }
+        .tile-card:active { transform: scale(0.98); }
 
         .fab-back {
             position: fixed;
@@ -100,21 +101,13 @@
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0,0,0,0.5), inset 0 -3px 0 #cbd5e1;
         }
-        .fab-back svg {
-            width: 28px;
-            height: 28px;
-        }
 
         .rule-card {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 1.25rem;
             overflow: hidden;
-            transition: border-color 0.3s;
-        }
-        .rule-card:hover {
-            border-color: rgba(255,255,255,0.2);
         }
         
         .rule-list {
@@ -135,16 +128,14 @@
             top: 0.6rem;
             width: 6px;
             height: 6px;
-            background-color: currentColor;
+            background-color: #10b981;
             border-radius: 50%;
-            opacity: 0.5;
         }
         
         .mahjong-tile-text {
             font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
             font-size: 1.2em;
             vertical-align: middle;
-            line-height: 1;
         }
 
         .section-header {
@@ -153,9 +144,6 @@
             border-left: 4px solid #10b981;
             font-weight: bold;
             color: #ecfdf5;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
         
         .example-box {
@@ -195,43 +183,43 @@
             table-layout: fixed;
             width: 100%;
         }
-        .col-rank { width: 50px; }
-        .col-score { width: 110px; }
-        .col-player { width: auto; }
-        .truncate-name {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-            width: 100%;
+        .col-rank { width: 60px; }
+        .col-score { width: 120px; }
+        
+        .rank-medal {
+            font-size: 1.4rem;
+            display: inline-block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .filter-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 2rem 0.5rem 1rem;
+            border-radius: 0.5rem;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            background-size: 1rem;
+            cursor: pointer;
         }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "firebase/": "https://esm.sh/firebase@^12.8.0/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "vite": "https://esm.sh/vite@^7.3.1",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
-  }
-}
-</script>
 </head>
 <body class="bg-pattern min-h-screen is-top">
 
+    <!-- 3D Background Canvas -->
     <canvas id="bg-canvas"></canvas>
 
     <!-- Floating Back Button -->
     <button id="floating-back" onclick="navigateTo('top')" class="fab-back" title="トップへ戻る">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
         </svg>
     </button>
 
-    <!-- Header -->
+    <!-- Global Header -->
     <nav class="sticky top-0 z-50 bg-black/40 backdrop-blur-md border-b border-white/10 p-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <h1 class="serif text-2xl tracking-tighter cursor-pointer" onclick="navigateTo('top')">
@@ -241,25 +229,25 @@
     </nav>
 
     <div class="max-w-7xl mx-auto px-4 py-8">
-        <!-- Top Page -->
+        <!-- Top Page Section -->
         <section id="top" class="page-transition visible">
-            <div class="text-center py-16 md:py-24 space-y-8">
-                <p class="text-emerald-600 tracking-[0.5em] text-sm uppercase font-bold">The Ultimate Battleground</p>
+            <div class="text-center py-16 md:py-28 space-y-8">
+                <p class="text-emerald-500 tracking-[0.6em] text-xs md:text-sm uppercase font-bold">The Ultimate Battleground</p>
                 <div class="max-w-5xl mx-auto">
-                    <h2 class="serif text-4xl md:text-7xl leading-tight mb-8 text-gray-200 drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
+                    <h2 class="serif text-4xl md:text-8xl leading-tight mb-8 text-white drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)]">
                         配られた運命を<br>
-                        <span>思考で支配せよ</span>
+                        思考で支配せよ
                     </h2>
-                    <p class="text-gray-300 text-base md:text-lg font-medium leading-loose">
-                        静寂の中に響く牌の音。研ぎ澄まされた一打が, 勝負の行方を決定する。<br class="hidden md:block">
-                        はちのこは, 真剣勝負を愛するすべての雀士に最高の舞台を提供します。
+                    <p class="text-gray-300 text-base md:text-xl font-medium leading-loose max-w-2xl mx-auto">
+                        静寂の中に響く牌の音。研ぎ澄まされた一打が、勝負の行方を決定する。
+                        はちのこは、真剣勝負を愛するすべての雀士に最高の舞台を提供します。
                     </p>
                 </div>
             </div>
 
-            <!-- Menu Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12 mb-12">
-                <button onclick="navigateTo('seat')" class="tile-card p-6 md:p-8 text-left group">
+            <!-- Menu Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16 mb-20">
+                <button onclick="navigateTo('seat')" class="tile-card p-8 text-left group">
                     <span class="text-emerald-700 text-xs font-bold tracking-widest uppercase block mb-3">Preparation</span>
                     <h3 class="text-xl font-bold mb-3 flex justify-between items-center">
                         席決め
@@ -267,7 +255,7 @@
                     </h3>
                     <p class="text-gray-600 text-xs leading-relaxed">公平な勝負はここから。場所を決める作法</p>
                 </button>
-                <button onclick="navigateTo('rules-4')" class="tile-card p-6 md:p-8 text-left group">
+                <button onclick="navigateTo('rules-4')" class="tile-card p-8 text-left group">
                     <span class="text-blue-700 text-xs font-bold tracking-widest uppercase block mb-3">Standard</span>
                     <h3 class="text-xl font-bold mb-3 flex justify-between items-center">
                         四麻ルール
@@ -275,7 +263,7 @@
                     </h3>
                     <p class="text-gray-600 text-xs leading-relaxed">王道の四人打ち。当店の基本ルール</p>
                 </button>
-                <button onclick="navigateTo('rules-3')" class="tile-card p-6 md:p-8 text-left group">
+                <button onclick="navigateTo('rules-3')" class="tile-card p-8 text-left group">
                     <span class="text-accent-red text-xs font-bold tracking-widest uppercase block mb-3">High Speed</span>
                     <h3 class="text-xl font-bold mb-3 flex justify-between items-center">
                         三麻ルール
@@ -283,7 +271,7 @@
                     </h3>
                     <p class="text-gray-600 text-xs leading-relaxed">刹那の攻防を楽しむ三人打ちルール</p>
                 </button>
-                <button onclick="navigateTo('ranking')" class="tile-card p-6 md:p-8 text-left group">
+                <button onclick="navigateTo('ranking')" class="tile-card p-8 text-left group">
                     <span class="text-yellow-700 text-xs font-bold tracking-widest uppercase block mb-3">Hall of Fame</span>
                     <h3 class="text-xl font-bold mb-3 flex justify-between items-center">
                         ランキング
@@ -296,26 +284,30 @@
 
         <!-- Seat Selection Section -->
         <section id="seat" class="page-transition hidden">
-            <div class="bg-black/30 rounded-3xl p-8 md:p-12 backdrop-blur-sm max-w-4xl mx-auto">
-                <h2 class="serif text-3xl mb-8 border-b border-emerald-500/30 pb-4 text-emerald-400 text-center">席決め、起家決め</h2>
-                <div class="space-y-12">
-                    <div>
-                        <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">席決め</h3>
-                        <div class="space-y-5 pl-4 text-gray-200 text-lg leading-relaxed">
-                            <p>1.<span class="mahjong-tile-text">🀀🀁🀂🀃</span>牌を裏返しにし混ぜ、適当な順番で一人ずつ引いていく。</p>
-                            <p>2.<span class="mahjong-tile-text">🀀</span>を引いた人が、好きな席を指定し、その席を東家として基準になる。</p>
-                            <p>3.他の人は引いた牌の席に着く。</p>
-                            <p class="text-emerald-400 font-medium text-base mt-4">※三麻の場合は<span class="mahjong-tile-text">🀀🀁🀂</span>牌を使用する。</p>
+            <div class="bg-black/40 rounded-3xl p-8 md:p-12 backdrop-blur-md max-w-4xl mx-auto border border-white/5">
+                <h2 class="serif text-3xl mb-10 border-b border-emerald-500/30 pb-4 text-emerald-400 text-center">席決め、起家決め</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div class="space-y-6">
+                        <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                            <span class="text-emerald-500">◆</span> 席決め
+                        </h3>
+                        <div class="space-y-4 text-gray-200 leading-relaxed">
+                            <p>1. <span class="mahjong-tile-text">🀀🀁🀂🀃</span>牌を裏返しにし混ぜ、適当な順番で一人ずつ引いていく。</p>
+                            <p>2. <span class="mahjong-tile-text">🀀</span>を引いた人が、好きな席を指定し、その席を東家として基準になる。</p>
+                            <p>3. 他の人は引いた牌の席に着く。</p>
+                            <p class="text-emerald-400 text-sm mt-4 font-bold">※三麻の場合は<span class="mahjong-tile-text">🀀🀁🀂</span>牌を使用する。</p>
                         </div>
                     </div>
-                    <div>
-                        <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">起家決め</h3>
-                        <div class="space-y-5 pl-4 text-gray-200 text-lg leading-relaxed">
-                            <p>1.<span class="mahjong-tile-text">🀀</span>を引いた人が仮仮親となってサイコロを振る。</p>
-                            <p>2.出た目の人が仮親となる。</p>
-                            <p>3.仮親になった人がサイコロを振り。</p>
-                            <p>4.出た目の人が起家（最初の親）となります。</p>
-                            <p class="text-emerald-400 font-medium text-base mt-4">※三麻の場合、サイコロの出た目の席が空席の場合は再度サイコロを振り直します。（空席ではない目が出るまで）</p>
+                    <div class="space-y-6">
+                        <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                            <span class="text-emerald-500">◆</span> 起家決め
+                        </h3>
+                        <div class="space-y-4 text-gray-200 leading-relaxed">
+                            <p>1. <span class="mahjong-tile-text">🀀</span>を引いた人が仮仮親となってサイコロを振る。</p>
+                            <p>2. 出た目の人が仮親となる。</p>
+                            <p>3. 仮親になった人が再度サイコロを振る。</p>
+                            <p>4. 出た目の人が起家（最初の親）となります。</p>
+                            <p class="text-emerald-400 text-sm mt-4 font-bold">※三麻で空席の目が出た場合は、有効な目が出るまで振り直します。</p>
                         </div>
                     </div>
                 </div>
@@ -324,59 +316,73 @@
 
         <!-- Ranking Page Section -->
         <section id="ranking" class="page-transition hidden">
-            <div class="bg-black/30 rounded-3xl p-6 md:p-12 border border-yellow-500/20 shadow-2xl shadow-yellow-500/5 max-w-4xl mx-auto space-y-16">
-                <!-- 年間 総合ポイント順位 TOP5 -->
-                <div>
-                    <div class="flex justify-between items-end mb-8">
-                        <h2 class="serif text-2xl md:text-3xl text-yellow-500">年間 総合ポイント順位 TOP5</h2>
-                        <span class="update-date text-[10px] md:text-xs text-gray-500 font-numeric" id="date-point">Loading...</span>
+            <div class="bg-black/40 rounded-3xl p-6 md:p-12 border border-yellow-500/20 shadow-2xl backdrop-blur-md max-w-4xl mx-auto space-y-16">
+                <!-- Header with Year Filter -->
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <h2 class="serif text-3xl text-yellow-500 flex items-center gap-3">
+                        <span class="text-4xl">🏆</span> ランキング
+                    </h2>
+                    <div class="flex items-center gap-3 bg-white/5 p-2 rounded-lg px-4 border border-white/10">
+                        <label for="year-filter" class="text-gray-400 text-sm font-bold">集計期間:</label>
+                        <select id="year-filter" class="filter-select font-numeric text-sm" onchange="loadAllRankings()">
+                            <option value="all">全期間</option>
+                        </select>
                     </div>
-                    <div class="overflow-hidden rounded-xl border border-white/10 bg-black/20">
+                </div>
+
+                <!-- Point Ranking -->
+                <div class="space-y-6">
+                    <div class="flex justify-between items-end border-l-4 border-yellow-500 pl-4">
+                        <h3 class="serif text-2xl text-yellow-500 flex items-center gap-2">
+                            <span>👑</span> 総合ポイント TOP5
+                        </h3>
+                        <span class="update-date text-[10px] text-gray-500 font-numeric" id="date-point">Loading...</span>
+                    </div>
+                    <div class="overflow-hidden rounded-2xl border border-white/10 bg-black/20">
                         <table class="ranking-table-fixed text-left font-numeric">
-                            <thead class="bg-white/5 text-gray-400 text-xs md:text-sm">
+                            <thead class="bg-white/5 text-gray-400 text-xs">
                                 <tr>
-                                    <th class="p-3 md:p-4 col-rank">Rank</th>
-                                    <th class="p-3 md:p-4 col-player">Player</th>
-                                    <th class="p-3 md:p-4 text-right col-score">Point</th>
+                                    <th class="p-4 col-rank text-center">順位</th>
+                                    <th class="p-4">プレイヤー</th>
+                                    <th class="p-4 text-right col-score">ポイント</th>
                                 </tr>
                             </thead>
-                            <tbody id="point-ranking-body">
-                                <tr><td colspan="3" class="p-8 text-center text-gray-500">読み込み中...</td></tr>
+                            <tbody id="point-ranking-body" class="divide-y divide-white/5">
+                                <tr><td colspan="3" class="p-10 text-center text-gray-500">読み込み中...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- ハイスコアランキング TOP5 -->
-                <div>
-                    <div class="flex justify-between items-end mb-8">
-                        <h2 class="serif text-2xl md:text-3xl text-yellow-500">ハイスコアランキング TOP5</h2>
-                        <span class="update-date text-[10px] md:text-xs text-gray-500 font-numeric" id="date-score">Loading...</span>
+                <!-- High Score Ranking -->
+                <div class="space-y-6">
+                    <div class="flex justify-between items-end border-l-4 border-emerald-500 pl-4">
+                        <h3 class="serif text-2xl text-emerald-400 flex items-center gap-2">
+                            <span>⚡</span> ハイスコア TOP5
+                        </h3>
+                        <span class="update-date text-[10px] text-gray-500 font-numeric" id="date-score">Loading...</span>
                     </div>
-                    <div class="overflow-hidden rounded-xl border border-white/10 bg-black/20">
+                    <div class="overflow-hidden rounded-2xl border border-white/10 bg-black/20">
                         <table class="ranking-table-fixed text-left font-numeric">
-                            <thead class="bg-white/5 text-gray-400 text-xs md:text-sm">
+                            <thead class="bg-white/5 text-gray-400 text-xs">
                                 <tr>
-                                    <th class="p-3 md:p-4 col-rank">Rank</th>
-                                    <th class="p-3 md:p-4 col-player">Player</th>
-                                    <th class="p-3 md:p-4 text-right col-score">Score</th>
+                                    <th class="p-4 col-rank text-center">順位</th>
+                                    <th class="p-4">プレイヤー</th>
+                                    <th class="p-4 text-right col-score">最高スコア</th>
                                 </tr>
                             </thead>
-                            <tbody id="score-ranking-body">
-                                <tr><td colspan="3" class="p-8 text-center text-gray-500">読み込み中...</td></tr>
+                            <tbody id="score-ranking-body" class="divide-y divide-white/5">
+                                <tr><td colspan="3" class="p-10 text-center text-gray-500">読み込み中...</td></tr>
                             </tbody>
                         </table>
                     </div>
-                    <p class="mt-4 text-xs text-gray-400 leading-relaxed">
-                        ※ 規定回数（25戦）を超えていない場合は「該当者なし」と表示されます。
-                    </p>
+                    <p class="text-[11px] text-gray-500 italic text-right">※ 規定回数（25戦以上）の対局者が対象となります。</p>
                 </div>
             </div>
         </section>
 
-        <!-- Rules-4, Rules-3 ... (省略なしで継続) -->
+        <!-- Rules-4 Section -->
         <section id="rules-4" class="page-transition hidden">
-            <!-- 四麻コンテンツ (元のまま) -->
             <div class="max-w-4xl mx-auto space-y-6">
                 <div class="text-center mb-10">
                     <h2 class="serif text-3xl md:text-4xl text-blue-400 mb-2">四麻 基本ゲームルール</h2>
@@ -384,22 +390,23 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="rule-card">
-                        <div class="section-header">基本システム</div>
+                        <div class="section-header" style="border-left-color: var(--accent-blue);">基本システム</div>
                         <div class="p-5">
                             <ul class="rule-list">
-                                <li>東南戦　25,000点持ちの30,000点返し、喰いタンあり、役の後付けなしのアリナシルールです。</li>
+                                <li>東南戦　25,000点持ちの30,000点返し、喰いタンあり、役の後付けありのアリナシルールです。</li>
                                 <li>定められた一式の麻雀牌の内、5萬・5筒・5索の各1枚が赤牌となっています。（赤牌の5萬・5筒・5索の各1枚はドラとする）</li>
                                 <li>槓ドラ、裏ドラあり。</li>
                                 <li>一本場は300点です。</li>
                                 <li>形式テンパイありで、テンパイ連荘です。</li>
                                 <li>リーチ棒、積棒はアガリ者が取得する。（供託があり、南四局が流局した場合、供託はトップ者に加算する）</li>
                                 <li>ダブロン、トリロン無し。頭ハネです。（ロン牌を捨てた人を基準にツモ番が近い人がアガる権利）</li>
-                                <li>得点計算は切り上げ満貫。</li>
+                                <li>オープンリーチなし</li>
+                                <li>得点計算は切り上げ満貫</li>
                             </ul>
                         </div>
                     </div>
                     <div class="rule-card">
-                        <div class="section-header">対局の終了条件</div>
+                        <div class="section-header" style="border-left-color: var(--accent-blue);">対局の終了条件</div>
                         <div class="p-5">
                             <ul class="rule-list">
                                 <li>南4局終了時、誰も30,000点に満たなかった場合は西場に入り、西4局まで行う。</li>
@@ -412,28 +419,29 @@
                         </div>
                     </div>
                     <div class="rule-card">
-                        <div class="section-header">途中流局について</div>
+                        <div class="section-header" style="border-left-color: var(--accent-blue);">途中流局について</div>
                         <div class="p-5">
-                            <p class="mb-4 text-xs text-emerald-400 bg-emerald-400/10 p-2 rounded">※通常の流局と同じで積棒は増え、親も流れます</p>
+                            <p class="mb-4 text-xs text-red-400 bg-emerald-400/10 p-2 rounded">※通常の流局と同じで積棒は増え、親も流れます</p>
                             <ul class="rule-list">
                                 <li>四風連打：1巡目に4人が同じ風牌（東・南・西・北）を連続して捨てると成立</li>
                                 <li>四カン流れ：2人以上が合計4つのカンをした時に成立</li>
                             </ul>
-                            <div class="example-box">（4回目のカンで捨て牌がロンされなかった時点で四カン流れとなります。槍槓（チャンカン）があった場合は、四カン流れより優先されます）</div>
+                            <div class="example-box">4回目のカンで捨て牌がロンされなかった時点で四カン流れとなります。槍槓（チャンカン）があった場合は、四カン流れより優先されます</div>
                             <ul class="rule-list mt-4">
-                                <li>九種九牌、4人リーチは続行です。</li>
+                                <li>九種九牌、4人リーチは続行です</li>
                                 <li>流し満貫あり</li>
-                                <li>オープンリーチなし</li>
+                                 <div class="example-box">通常のツモ上がりと同じように扱います。（供託は流し満貫の和了者に、積み棒も考慮します））</div>
                             </ul>
                         </div>
                     </div>
                     <div class="rule-card">
-                        <div class="section-header">フリテン・チョンボ</div>
+                        <div class="section-header" style="border-left-color: var(--accent-blue);">フリテン・チョンボ</div>
                         <div class="p-5">
                             <ul class="rule-list">
                                 <li>フリテンリーチ、リーチ後の見逃しはツモのみあがれます。ロンはできません。</li>
                                 <li class="text-white font-bold mb-1">「同巡内フリテン」</li>
-                                <p class="text-xs text-gray-400 mb-4 pl-4 leading-relaxed">自分がテンパイ（役あり、リーチしていない）していて、他家から自分のアガリ牌が出たときに、その牌でロンをしなかった時点で、「同巡内フリテン」となる。同巡で他の他家がアガリ牌を捨てたとしてもロンすることはできません。同巡内フリテンは自分のツモ番を経て解消されます。</p>
+                                <div class="example-box">自分がテンパイ（役あり、リーチしていない）していて、他家から自分のアガリ牌が出たときに、その牌でロンをしなかった時点で、「同巡内フリテン」となる。同巡で他の他家がアガリ牌を捨てたとしてもロンすることはできません。同巡内フリテンは自分のツモ番を経て解消されます。</div>
+                                <br/>
                                 <li class="text-white font-bold mb-1">チョンボ（誤ロン、役無しアガリ、流局ノーテンリーチ）</li>
                             </ul>
                             <div class="example-box border-red-500/30">
@@ -442,16 +450,17 @@
                                 子がチョンボした場合 → 親に4,000点、子に2,000点ずつ支払う
                             </div>
                             <ul class="rule-list mt-4">
-                                <li>チョンボした局はリセットされる。</li>
-                                <p class="text-xs text-gray-400 pl-4 leading-relaxed">（その局をやり直しする。局は流れません）リーチ棒はリーチ者に戻ります。積み棒はそのまま。連荘数も増えません。</p>
+                                <li>チョンボした局はリセットされる</li>
+                                <div class="example-box">その局をやり直しする。局は流れません。リーチ棒はリーチ者に戻ります。積み棒はそのまま。連荘数も増えません。</div>
+                                <br/>
                                 <li>誤チー、誤ポンはお咎めなし。謝って何事もなかったように振る舞いましょう。</li>
-                                <li>多牌、少牌はアガリ放棄。</li>
+                                <li>多牌、少牌はアガリ放棄</li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="rule-card">
-                    <div class="section-header">ポイントの計算</div>
+                    <div class="section-header" style="border-left-color: var(--accent-blue);">ポイントの計算</div>
                     <div class="p-6 md:p-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-6">
@@ -473,7 +482,7 @@
                                             <span class="text-xs text-gray-400">4位</span><span class="font-numeric font-bold">-10,000点 (-10P)</span>
                                         </div>
                                     </div>
-                                    <p class="mt-3 text-[10px] text-emerald-500/80">※100点単位でも同点の場合は上家優先 （「起家から近い方」が優先）です。</p>
+                                    <p class="mt-3 text-[10px] ">※100点単位でも同点の場合は上家優先 （「起家から近い方」が優先）です。</p>
                                 </div>
                                 <div>
                                     <h4 class="text-emerald-400 font-bold mb-4 flex items-center gap-2">
@@ -513,8 +522,8 @@
             </div>
         </section>
 
+        <!-- Rules-3 Section -->
         <section id="rules-3" class="page-transition hidden">
-            <!-- 三麻コンテンツ (元のまま) -->
             <div class="max-w-4xl mx-auto space-y-6">
                 <div class="text-center mb-10">
                     <h2 class="serif text-3xl md:text-4xl text-accent-red mb-2">三麻 基本ゲームルール</h2>
@@ -525,8 +534,8 @@
                         <div class="section-header" style="border-left-color: var(--accent-red);">基本システム</div>
                         <div class="p-5">
                             <ul class="rule-list">
-                                <li>東南戦　35,000点持ちの40,000点返し、喰いタンあり、役の後付けなしのアリナシルールです。</li>
-                                <li>定められた一式の麻銭牌の内、5萬・5筒・5索の各1枚が赤牌となっています。（赤牌の5萬・5筒・5索の各1枚はドラとする）</li>
+                                <li>東南戦　35,000点持ちの40,000点返し、喰いタンあり、役の後付けありのアリナシルールです。</li>
+                                <li>定められた一式の麻雀牌の内、5萬・5筒・5索の各1枚が赤牌となっています。（赤牌の5萬・5筒・5索の各1枚はドラとする）</li>
                                 <li>槓ドラ、裏ドラあり。</li>
                                 <li>一本場は300点です。</li>
                                 <li>形式テンパイありで、テンパイ連荘です。</li>
@@ -538,7 +547,8 @@
                                 </div>
                                 <li>リーチ棒、供託はアガリ者が取得する。（南四局が流局した場合、トップ者に加算する）</li>
                                 <li>ダブロン、トリロン無し。頭ハネです。</li>
-                                <li>得点計算は切り上げ満貫。</li>
+                                <li>オープンリーチなし</li>
+                                <li>得点計算は切り上げ満貫</li>
                             </ul>
                         </div>
                     </div>
@@ -560,14 +570,13 @@
                         <div class="p-5">
                             <p class="mb-4 text-xs text-red-400 bg-red-400/10 p-2 rounded">※通常の流局と同じで積棒は増え、親も流れます</p>
                             <ul class="rule-list">
-                                <li>四風連打：1巡目に4人が同じ風牌（東・南・西・北）を連続して捨てると成立</li>
                                 <li>四カン流れ：2人以上が合計4つのカンをした時に成立</li>
                             </ul>
-                            <div class="example-box">（4回目のカンで捨て牌がロンされなかった時点で四カン流れとなります。槍槓（チャンカン）があった場合は、四カン流れより優先されます）</div>
+                            <div class="example-box">4回目のカンで捨て牌がロンされなかった時点で四カン流れとなります。槍槓（チャンカン）があった場合は、四カン流れより優先されます</div>
                             <ul class="rule-list mt-4">
-                                <li>九種九牌、4人リーチは続行です。</li>
+                                <li>九種九牌、3人リーチは続行です</li>
                                 <li>流し満貫あり</li>
-                                <li>オープンリーチなし</li>
+                                <div class="example-box">通常のツモ上がりと同じように扱います。（供託は流し満貫の和了者に、積み棒も考慮します））</div>
                             </ul>
                         </div>
                     </div>
@@ -577,7 +586,8 @@
                             <ul class="rule-list">
                                 <li>フリテンリーチ、リーチ後の見逃しはツモのみあがれます。ロンはできません。</li>
                                 <li class="text-white font-bold mb-1">「同巡内フリテン」</li>
-                                <p class="text-xs text-gray-400 mb-4 pl-4 leading-relaxed">自分がテンパイ（役あり、リーチしていない）していて、他家から自分のアガリ牌が出たときに、その牌でロンをしなかった時点で、「同巡内フリテン」となる。同巡で他の他家がアガリ牌を捨てたとしてもロンすることはできません。同巡内フリテンは自分のツモ番を経て解消されます。</p>
+                                <div class="example-box">自分がテンパイ（役あり、リーチしていない）していて、他家から自分のアガリ牌が出たときに、その牌でロンをしなかった時点で、「同巡内フリテン」となる。同巡で他の他家がアガリ牌を捨てたとしてもロンすることはできません。同巡内フリテンは自分のツモ番を経て解消されます。</div>
+                                <br/>
                                 <li class="text-white font-bold mb-1">チョンボ（誤ロン、役無しアガリ、流局ノーテンリーチ）</li>
                             </ul>
                             <div class="example-box border-red-500/30">
@@ -586,10 +596,11 @@
                                 子がチョンボした場合 → 親に4,000点、子に2,000点ずつ支払う
                             </div>
                             <ul class="rule-list mt-4">
-                                <li>チョンボした局はリセットされる。</li>
-                                <p class="text-xs text-gray-400 pl-4 leading-relaxed">（その局をやり直しする。局は流れません）リーチ棒はリーチ者に戻ります。積み棒はそのまま。連荘数も増えません。</p>
+                                <li>チョンボした局はリセットされる</li>
+                                <div class="example-box">その局をやり直しする。局は流れません。リーチ棒はリーチ者に戻ります。積み棒はそのまま。連荘数も増えません。</div>
+                                <br/>
                                 <li>誤チー、誤ポンはお咎めなし。謝って何事もなかったように振る舞いましょう。</li>
-                                <li>多牌、少牌はアガリ放棄。</li>
+                                <li>多牌、少牌はアガリ放棄</li>
                             </ul>
                         </div>
                     </div>
@@ -600,12 +611,12 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-6">
                                 <div>
-                                    <h4 class="text-accent-red font-bold mb-4 flex items-center gap-2">
-                                        <span class="point-badge" style="background: rgba(190, 18, 60, 0.2);">ウマ</span> 順位点
+                                    <h4 class="text-accent-red text-red-400 font-bold mb-4 flex items-center gap-2">
+                                        <span class="point-badge">ウマ</span> 順位点
                                     </h4>
                                     <div class="grid grid-cols-1 gap-3">
                                         <div class="bg-white/5 p-3 rounded-lg border border-white/5 flex justify-between items-center">
-                                            <span class="text-xs text-gray-400">1位</span><span class="font-numeric font-bold text-emerald-400">+10,000点 (+10P)</span>
+                                            <span class="text-xs text-gray-400">1位</span><span class="font-numeric font-bold ">+10,000点 (+10P)</span>
                                         </div>
                                         <div class="bg-white/5 p-3 rounded-lg border border-white/5 flex justify-between items-center">
                                             <span class="text-xs text-gray-400">2位</span><span class="font-numeric font-bold text-gray-400">0点 (±0P)</span>
@@ -617,8 +628,8 @@
                                     <p class="mt-3 text-[10px] text-accent-red/80">※100点単位でも同点の場合は上家優先 （「起家から近い方」が優先）です。</p>
                                 </div>
                                 <div>
-                                    <h4 class="text-accent-red font-bold mb-4 flex items-center gap-2">
-                                        <span class="point-badge" style="background: rgba(190, 18, 60, 0.2);">オカ</span> トップ賞
+                                    <h4 class="text-accent-red text-red-400 font-bold mb-4 flex items-center gap-2">
+                                        <span class="point-badge" >オカ</span> トップ賞
                                     </h4>
                                     <div class="bg-white/5 p-4 rounded-lg border border-white/5 flex justify-between items-center">
                                         <span class="text-sm text-gray-300">トップボーナス</span><span class="font-numeric text-xl font-bold text-yellow-500">15,000点 (15P)</span>
@@ -626,7 +637,7 @@
                                 </div>
                             </div>
                             <div class="space-y-4">
-                                <h4 class="text-accent-red font-bold mb-4">ポイントの計算方法</h4>
+                                <h4 class="text-accent-red text-red-400 font-bold mb-4">ポイントの計算方法</h4>
                                 <div class="space-y-4">
                                     <div class="flex gap-3">
                                         <span class="step-num" style="background: var(--accent-red);">1</span>
@@ -655,12 +666,12 @@
         </section>
     </div>
 
-    <footer class="mt-20 border-t border-white/5 p-8 text-center text-gray-500 text-xs font-numeric">
-        <p>&copy; 2026 雀荘 はちのこ - Hachinoko Mahjong. All Rights Reserved.</p>
+    <footer class="mt-20 border-t border-white/5 p-12 text-center text-gray-600 text-[10px] font-numeric tracking-widest">
+        <p>&copy; 2026 雀荘 はちのこ - HACHINOKO MAHJONG CLUB. ALL RIGHTS RESERVED.</p>
     </footer>
 
     <script>
-        // Firebase Configuration (Jambo Proと同じ設定)
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyChmp_v3_PKy_7MvHTWRI-vk-NzUVs7Xcs",
             authDomain: "jambopro-a311e.firebaseapp.com",
@@ -669,61 +680,84 @@
             messagingSenderId: "661021094699",
             appId: "1:661021094699:web:252aa01d90b0da4ac38b6e"
         };
-
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // 3D Animation System
         let scene, camera, renderer, tiles = [];
-        const TILE_COUNT = 15;
+        const TILE_COUNT = 20;
 
-        // Background Animation (Three.js)
         function initThree() {
+            const canvas = document.getElementById('bg-canvas');
+            if (!canvas) return;
+
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), alpha: true, antialias: true });
+            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             
-            scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-            const geometry = new THREE.BoxGeometry(0.6, 0.8, 0.4);
-            const material = new THREE.MeshPhongMaterial({ color: 0xf8fafc });
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
+
+            const directLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            directLight.position.set(10, 20, 10);
+            scene.add(directLight);
+
+            const pointLight = new THREE.PointLight(0x10b981, 2, 60);
+            pointLight.position.set(-5, 5, 5);
+            scene.add(pointLight);
+
+            const geometry = new THREE.BoxGeometry(0.7, 1.0, 0.45);
+            const material = new THREE.MeshPhongMaterial({ 
+                color: 0xf8fafc,
+                shininess: 120,
+                specular: 0x666666
+            });
+
             for (let i = 0; i < TILE_COUNT; i++) {
                 const tile = new THREE.Mesh(geometry, material);
                 resetTile(tile, true);
                 scene.add(tile);
                 tiles.push(tile);
             }
-            camera.position.z = 5;
+
+            camera.position.z = 8;
             animateThree();
         }
 
         function resetTile(tile, initial = false) {
-            tile.position.x = (Math.random() - 0.5) * 12;
-            tile.position.y = initial ? (Math.random() - 0.5) * 15 : 8;
-            tile.position.z = (Math.random() - 0.5) * 5;
-            tile.userData.speed = 0.01 + Math.random() * 0.015;
-            tile.userData.rotSpeed = { x: (Math.random()-0.5)*0.01, y: (Math.random()-0.5)*0.01, z: (Math.random()-0.5)*0.01 };
+            tile.position.x = (Math.random() - 0.5) * 16;
+            tile.position.y = initial ? (Math.random() - 0.5) * 22 : 14;
+            tile.position.z = (Math.random() - 0.5) * 6;
+            tile.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+            tile.userData.speed = 0.015 + Math.random() * 0.035;
+            tile.userData.rotX = (Math.random() - 0.5) * 0.03;
+            tile.userData.rotY = (Math.random() - 0.5) * 0.03;
         }
 
         function animateThree() {
             requestAnimationFrame(animateThree);
             tiles.forEach(tile => {
                 tile.position.y -= tile.userData.speed;
-                tile.rotation.x += tile.userData.rotSpeed.x;
-                if (tile.position.y < -8) resetTile(tile);
+                tile.rotation.x += tile.userData.rotX;
+                tile.rotation.y += tile.userData.rotY;
+                if (tile.position.y < -14) resetTile(tile);
             });
             renderer.render(scene, camera);
         }
 
-        // SPA Navigation
+        // SPA Navigation Logic
         function navigateTo(pageId) {
-            document.querySelectorAll('.page-transition').forEach(sec => {
+            const sections = document.querySelectorAll('.page-transition');
+            sections.forEach(sec => {
                 sec.classList.remove('visible');
                 sec.classList.add('hidden');
             });
+
             const body = document.body;
             const fab = document.getElementById('floating-back');
+
             if (pageId === 'top') {
                 body.classList.add('is-top');
                 fab.classList.remove('show');
@@ -731,85 +765,119 @@
                 body.classList.remove('is-top');
                 fab.classList.add('show');
             }
+
             setTimeout(() => {
                 const target = document.getElementById(pageId);
-                target.classList.remove('hidden');
-                target.classList.add('visible');
+                if (target) {
+                    target.classList.remove('hidden');
+                    target.classList.add('visible');
+                }
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }, 50);
-            if (pageId === 'ranking') loadAllRankings();
+
+            if (pageId === 'ranking') loadInitialRanking();
         }
 
-        // Aggregate Firestore data for Rankings
-        async function fetchRankingData() {
+        // Ranking System Logic
+        let allRecords = [];
+        let availableYears = new Set();
+
+        async function fetchAllRecords() {
             try {
                 const snapshot = await db.collection('records').get();
-                const currentYear = new Date().getFullYear().toString();
-                const stats = {};
-
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const recordYear = new Date(data.timestamp).getFullYear().toString();
-                    if (recordYear !== currentYear) return; // 当年のみ
-
-                    data.results.forEach(res => {
-                        if (!stats[res.name]) {
-                            stats[res.name] = { name: res.name, totalPt: 0, games: 0, maxScore: 0 };
-                        }
-                        stats[res.name].totalPt += res.point;
-                        stats[res.name].games += 1;
-                        if (res.score > stats[res.name].maxScore) {
-                            stats[res.name].maxScore = res.score;
-                        }
-                    });
+                allRecords = snapshot.docs.map(doc => doc.data());
+                
+                availableYears.clear();
+                allRecords.forEach(data => {
+                    if (data.timestamp) {
+                        const year = new Date(data.timestamp).getFullYear().toString();
+                        availableYears.add(year);
+                    }
                 });
-
-                return Object.values(stats);
+                updateYearDropdown();
             } catch (e) {
-                console.error("Firestore Fetch Error:", e);
-                return null;
+                console.error("Firebase Error:", e);
             }
+        }
+
+        function updateYearDropdown() {
+            const select = document.getElementById('year-filter');
+            if (!select) return;
+            const years = Array.from(availableYears).sort((a, b) => b - a);
+            select.innerHTML = '<option value="all">全期間</option>';
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = `${year}年`;
+                select.appendChild(option);
+            });
+        }
+
+        function aggregateStats(yearFilter) {
+            const stats = {};
+            const filtered = yearFilter === 'all' 
+                ? allRecords 
+                : allRecords.filter(r => r.timestamp && new Date(r.timestamp).getFullYear().toString() === yearFilter);
+
+            filtered.forEach(data => {
+                data.results.forEach(res => {
+                    if (!stats[res.name]) {
+                        stats[res.name] = { name: res.name, totalPt: 0, games: 0, maxScore: 0 };
+                    }
+                    stats[res.name].totalPt += res.point;
+                    stats[res.name].games += 1;
+                    if (res.score > stats[res.name].maxScore) {
+                        stats[res.name].maxScore = res.score;
+                    }
+                });
+            });
+            return Object.values(stats);
         }
 
         function renderRankingTable(data, containerId, type) {
             const tbody = document.getElementById(containerId);
-            if (!data) {
-                tbody.innerHTML = '<tr><td colspan="3" class="p-8 text-center text-red-400">Error loading data</td></tr>';
-                return;
-            }
+            if (!tbody) return;
 
-            let sortedData = [];
+            let sorted = [];
             if (type === 'point') {
-                sortedData = [...data].sort((a, b) => b.totalPt - a.totalPt);
+                sorted = [...data].sort((a, b) => b.totalPt - a.totalPt);
             } else {
-                // ハイスコアは規定回数（25戦以上）
-                sortedData = [...data].filter(p => p.games >= 25).sort((a, b) => b.maxScore - a.maxScore);
+                sorted = [...data].filter(p => p.games >= 25).sort((a, b) => b.maxScore - a.maxScore);
             }
 
             let html = "";
             for (let i = 0; i < 5; i++) {
-                const player = sortedData[i];
-                const isInvalid = !player;
+                const p = sorted[i];
+                const isNone = !p;
                 
-                let displayVal = "-";
-                if (!isInvalid) {
+                let rankLabel = (i + 1).toString();
+                if (i === 0) rankLabel = '<span class="rank-medal">🥇</span>';
+                else if (i === 1) rankLabel = '<span class="rank-medal">🥈</span>';
+                else if (i === 2) rankLabel = '<span class="rank-medal">🥉</span>';
+
+                let val = "-";
+                let colorClass = 'text-white';
+
+                if (!isNone) {
                     if (type === 'point') {
-                        displayVal = player.totalPt > 0 ? `+${player.totalPt}` : player.totalPt;
+                        // ポイント表示：+符号なし、マイナスは赤、プラスは白
+                        val = p.totalPt;
+                        colorClass = p.totalPt < 0 ? 'text-red-500' : 'text-white';
                     } else {
-                        displayVal = player.maxScore.toLocaleString();
+                        // ハイスコア表示：3桁区切り
+                        val = p.maxScore.toLocaleString();
+                        colorClass = 'text-emerald-400';
                     }
                 }
 
                 html += `
-                    <tr class="border-b border-white/5 hover:bg-white/5 transition">
-                        <td class="p-4 font-bold text-white font-numeric col-rank">${i + 1}</td>
-                        <td class="p-4 font-bold col-player">
-                            <span class="truncate-name ${isInvalid ? 'text-gray-500' : 'text-gray-200'}" title="${isInvalid ? '' : player.name}">
-                                ${isInvalid ? '該当者なし' : player.name}
-                            </span>
+                    <tr class="hover:bg-white/5 transition-colors">
+                        <td class="p-4 text-center font-bold text-gray-400">${rankLabel}</td>
+                        <td class="p-4 font-bold ${isNone ? 'text-gray-600' : 'text-gray-200'}">
+                            ${isNone ? '該当者なし' : p.name}
                         </td>
-                        <td class="p-4 text-right font-numeric font-bold col-score ${isInvalid ? 'text-gray-500' : 'text-white'}">
-                            ${displayVal}
+                        <td class="p-4 text-right font-bold ${isNone ? 'text-gray-600' : colorClass}">
+                            ${val}
                         </td>
                     </tr>
                 `;
@@ -817,27 +885,35 @@
             tbody.innerHTML = html;
         }
 
-        async function loadAllRankings() {
-            const today = new Date().toLocaleDateString('ja-JP');
-            const data = await fetchRankingData();
-            
-            renderRankingTable(data, 'point-ranking-body', 'point');
-            document.getElementById('date-point').innerText = "Updated: " + today;
-            
-            renderRankingTable(data, 'score-ranking-body', 'score');
-            document.getElementById('date-score').innerText = "Updated: " + today;
+        async function loadInitialRanking() {
+            await fetchAllRecords();
+            loadAllRankings();
         }
 
-        window.onload = initThree;
-        window.onresize = () => {
-            if (camera) {
+        function loadAllRankings() {
+            const year = document.getElementById('year-filter').value;
+            const data = aggregateStats(year);
+            const dateStr = new Date().toLocaleDateString('ja-JP');
+            
+            renderRankingTable(data, 'point-ranking-body', 'point');
+            renderRankingTable(data, 'score-ranking-body', 'score');
+            
+            document.getElementById('date-point').textContent = "最終更新: " + dateStr;
+            document.getElementById('date-score').textContent = "最終更新: " + dateStr;
+        }
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            initThree();
+        });
+
+        window.addEventListener('resize', () => {
+            if (camera && renderer) {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
-            }
-            if (renderer) {
                 renderer.setSize(window.innerWidth, window.innerHeight);
             }
-        };
+        });
     </script>
 </body>
 </html>
